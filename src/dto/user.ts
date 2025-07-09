@@ -1,8 +1,12 @@
 import { Rule, RuleType } from '@midwayjs/validate';
+import exp = require('constants');
 
 export class RegisterDTO {
   @Rule(RuleType.string().required().min(3).max(20))
   username: string;
+
+  @Rule(RuleType.string().optional().min(0).max(500))
+  description?: string;
 
   @Rule(RuleType.string().required().min(1).max(20))
   account: string;
@@ -23,4 +27,24 @@ export class LoginDTO {
 
   @Rule(RuleType.string().required())
   password: string;
+}
+
+export class HTMLRenderUserDTO {
+  @Rule(RuleType.string().required())
+  username: string;
+
+  @Rule(RuleType.string().optional().min(0).max(500))
+  description?: string;
+
+  @Rule(RuleType.string().optional().email())
+  email?: string;
+
+  @Rule(RuleType.string().optional().length(11))
+  phone?: string;
+
+  @Rule(RuleType.array().items(RuleType.number()))
+  joinEventId: number[];
+
+  @Rule(RuleType.array().items(RuleType.number()))
+  hostEventId: number[];
 }

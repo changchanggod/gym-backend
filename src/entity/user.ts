@@ -14,6 +14,9 @@ export class User {
   @Column({ unique: true })
   username: string;
 
+  @Column({ type: 'text' })
+  description?: string;
+
   @Column({ unique: true })
   account: string;
 
