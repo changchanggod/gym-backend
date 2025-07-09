@@ -1,14 +1,51 @@
 import { Provide } from '@midwayjs/core';
-import { IUserOptions } from '../interface';
-
+import { User } from '../entity/user';
+import { RegisterDTO } from '../dto/user';
+import { InjectEntityModel } from '@midwayjs/typeorm';
+import { Repository } from 'typeorm';
 @Provide()
 export class UserService {
-  async getUser(options: IUserOptions) {
-    return {
-      uid: options.uid,
-      username: 'mockedName',
-      phone: '12345678901',
-      email: 'xxx.xxx@xxx.com',
-    };
+  @InjectEntityModel(User)
+  userRepository: Repository<User>;
+
+  // 用户注册
+  async register(registerDTO: RegisterDTO) {
+    const newUser = new User();
+    newUser.username = registerDTO.username;
+    newUser.account = registerDTO.account;
+    newUser.password = registerDTO.password;
+    newUser.email = registerDTO.email;
+    newUser.phone = registerDTO.phone;
+    newUser.joinEventId = [];
+    newUser.hostEventId = [];
+
+    return await this.userRepository.save(newUser);
+  }
+
+  // 用户信息更改
+  async updateUser(id: number, updateData: Partial<User>) {
+    const user = await this.userRepository.findOne({ where: { id } });
+    if (!user) {
+      throw new Error('User not found');
+    }
+    Object.assign(user, updateData);
+    return await this.userRepository.save(user);
+  }
+
+  // 用户注销
+  async deleteUser(id: number) {
+    const user = await this.userRepository.findOne({ where: { id } });
+    if (!user) {
+      throw new Error('User not found');
+    }
+    return await this.userRepository.remove(user);
+  }
+
+  async getUser(id: number) {
+    const user = await this.userRepository.findOne({ where: { id } });
+    if (!user) {
+      throw new Error('User not found');
+    }
+    return user;
   }
 }
