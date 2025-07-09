@@ -15,15 +15,15 @@ export class User {
   password: string;
 
   @Column({ nullable: true })
-  email: string;
+  email?: string;
 
   @Column({ nullable: true })
-  phone: string;
+  phone?: string;
 
-  @Column()
+  @Column({ type: 'simple-array' })
   joinEventId: number[];
 
-  @Column()
+  @Column({ type: 'simple-array' })
   hostEventId: number[];
 }
 
