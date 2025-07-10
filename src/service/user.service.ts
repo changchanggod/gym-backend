@@ -56,7 +56,7 @@ export class UserService {
     return htmlRenderUserDTO;
   }
 
-  async LoginUser(LoginDTO: LoginDTO) {
+  async loginUser(LoginDTO: LoginDTO) {
     const user = await this.userRepository.findOne({
       where: { account: LoginDTO.account },
     });

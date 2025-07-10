@@ -127,7 +127,7 @@ export class APIController {
   @Post('/login')
   async loginUser(@Body() loginDTO: LoginDTO) {
     try {
-      const user = await this.userService.LoginUser(loginDTO);
+      const user = await this.userService.loginUser(loginDTO);
       return { success: true, message: '登录成功', data: user };
     } catch (error) {
       if (error.message === 'Invalid account') {

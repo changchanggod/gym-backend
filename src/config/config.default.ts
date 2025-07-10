@@ -20,7 +20,7 @@ export default {
         database: 'gym_database',
         synchronize: true, // 开发环境使用，生产环境建议关闭
         logging: true,
-        entities: [join(__dirname, '../entity/**/*.entity{.ts,.js}')],
+        entities: [join(__dirname, '../entity/**/*.{ts,js}')],
       },
     },
   },
