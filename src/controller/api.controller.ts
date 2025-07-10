@@ -124,4 +124,33 @@ export class APIController {
       };
     }
   }
+
+  @Post('/login')
+  async loginUser(@Body() loginDTO: LoginDTO) {
+    try {
+      const user = await this.userService.LoginUser(loginDTO);
+      return { success: true, message: '登录成功', data: user };
+    } catch (error) {
+      if (error.message === 'Invalid account') {
+        return {
+          success: false,
+          message: '账号不存在',
+          code: 404,
+        };
+      }
+      if (error.message === 'Invalid password') {
+        return {
+          success: false,
+          message: '密码错误',
+          code: 401,
+        };
+      }
+      // 处理其他错误
+      return {
+        success: false,
+        message: '登录失败',
+        error: error.message,
+      };
+    }
+  }
 }

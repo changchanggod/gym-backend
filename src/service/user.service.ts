@@ -1,6 +1,6 @@
 import { Provide } from '@midwayjs/core';
 import { User } from '../entity/user';
-import { RegisterDTO, HTMLRenderUserDTO } from '../dto/user';
+import { RegisterDTO, HTMLRenderUserDTO, LoginDTO } from '../dto/user';
 import { InjectEntityModel } from '@midwayjs/typeorm';
 import { Repository } from 'typeorm';
 @Provide()
@@ -45,6 +45,26 @@ export class UserService {
     const user = await this.userRepository.findOne({ where: { id } });
     if (!user) {
       throw new Error('User not found');
+    }
+    const htmlRenderUserDTO = new HTMLRenderUserDTO();
+    htmlRenderUserDTO.username = user.username;
+    htmlRenderUserDTO.description = user.description;
+    htmlRenderUserDTO.email = user.email;
+    htmlRenderUserDTO.phone = user.phone;
+    htmlRenderUserDTO.joinEventId = user.joinEventId;
+    htmlRenderUserDTO.hostEventId = user.hostEventId;
+    return htmlRenderUserDTO;
+  }
+
+  async LoginUser(LoginDTO: LoginDTO) {
+    const user = await this.userRepository.findOne({
+      where: { account: LoginDTO.account },
+    });
+    if (!user) {
+      throw new Error('Invalid account');
+    }
+    if (user.password !== LoginDTO.password) {
+      throw new Error('Invalid password');
     }
     const htmlRenderUserDTO = new HTMLRenderUserDTO();
     htmlRenderUserDTO.username = user.username;
