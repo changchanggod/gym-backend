@@ -125,8 +125,11 @@ export class APIController {
   }
 
   @Post('/login')
-  async loginUser(@Body() loginDTO: LoginDTO) {
+  async loginUser(@Body() account: string, @Body() password: string) {
     try {
+      const loginDTO = new LoginDTO();
+      loginDTO.account = account;
+      loginDTO.password = password;
       const user = await this.userService.loginUser(loginDTO);
       return { success: true, message: '登录成功', data: user };
     } catch (error) {
