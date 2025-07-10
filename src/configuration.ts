@@ -26,6 +26,8 @@ export class MainConfiguration {
   app: koa.Application;
 
   async onReady() {
+    const ormConfig = this.app.getConfig('orm');
+    console.log('ORM Config:', ormConfig);
     // add middleware
     this.app.useMiddleware([ReportMiddleware]);
     // add filter
