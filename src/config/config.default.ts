@@ -1,5 +1,6 @@
 import { MidwayConfig } from '@midwayjs/core';
-import { join } from 'path';
+import { User } from '../entity/user';
+import { Event } from '../entity/event';
 export default {
   // use for cookie sign key, should change to your own and keep security
   keys: '1752039930590_489',
@@ -9,7 +10,7 @@ export default {
   view: {
     defaultViewEngine: 'nunjucks',
   },
-  orm: {
+  typeorm: {
     dataSource: {
       default: {
         type: 'mysql', // 数据库类型，根据实际情况修改
@@ -20,7 +21,7 @@ export default {
         database: 'gym_database',
         synchronize: true, // 开发环境使用，生产环境建议关闭
         logging: true,
-        entities: [join(__dirname, '../entity/**/*.{ts,js}')],
+        entities: [User, Event], // 实体类数组
       },
     },
   },
