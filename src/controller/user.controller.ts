@@ -125,7 +125,10 @@ export class APIController {
   }
 
   @Post('/login')
-  async loginUser(@Body() account: string, @Body() password: string) {
+  async loginUser(
+    @Body('account') account: string,
+    @Body('password') password: string
+  ) {
     try {
       const loginDTO = new LoginDTO();
       loginDTO.account = account;

@@ -7,6 +7,7 @@ import { join } from 'path';
 import * as view from '@midwayjs/view-nunjucks';
 import { WeatherErrorFilter } from './filter/weather.filter';
 import * as orm from '@midwayjs/typeorm';
+const cors = require('@koa/cors');
 
 @Configuration({
   imports: [
@@ -28,6 +29,14 @@ export class MainConfiguration {
   async onReady() {
     // add middleware
     // this.app.useMiddleware([ReportMiddleware]);
+    this.app.use(
+      cors({
+        origin: '*',
+        allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+        allowHeaders: ['Content-Type', 'Authorization'],
+        credentials: true,
+      })
+    );
     // add filter
     this.app.useFilter([WeatherErrorFilter]);
   }
