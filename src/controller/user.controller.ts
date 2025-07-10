@@ -2,7 +2,6 @@ import {
   Inject,
   Controller,
   Get,
-  Query,
   Post,
   Body,
   Patch,
@@ -10,7 +9,7 @@ import {
 } from '@midwayjs/core';
 import { Context } from '@midwayjs/koa';
 import { UserService } from '../service/user.service';
-import { RegisterDTO, LoginDTO, HTMLRenderUserDTO } from '../dto/user';
+import { RegisterDTO, LoginDTO } from '../dto/user';
 import { User } from '../entity/user';
 import { Del } from '@midwayjs/core';
 

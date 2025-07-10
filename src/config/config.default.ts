@@ -1,6 +1,5 @@
 import { MidwayConfig } from '@midwayjs/core';
 import { join } from 'path';
-
 export default {
   // use for cookie sign key, should change to your own and keep security
   keys: '1752039930590_489',
@@ -24,5 +23,11 @@ export default {
         entities: [join(__dirname, '../entity/**/*.entity{.ts,.js}')],
       },
     },
+  },
+  cors: {
+    origin: '*', // 开发环境允许所有域名跨域（生产环境需指定具体域名）
+    allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // 允许的请求方法
+    allowHeaders: ['Content-Type', 'Authorization'], // 允许的请求头
+    credentials: true, // 允许跨域请求携带 Cookie（如需登录状态保持）
   },
 } as MidwayConfig;

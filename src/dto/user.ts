@@ -1,5 +1,4 @@
 import { Rule, RuleType } from '@midwayjs/validate';
-import exp = require('constants');
 
 export class RegisterDTO {
   @Rule(RuleType.string().required().min(3).max(20))
