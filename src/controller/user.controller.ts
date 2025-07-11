@@ -63,7 +63,7 @@ export class APIController {
     if (result) {
       return { success: true, message: '注册成功', data: result };
     }
-    return { success: false, message: result };
+    return { success: false, message: '注册失败，请稍后再试' };
   }
   @Patch('/updateUser/:id') // 假设路径参数为id，例如 /updateUser/123
   async updateUser(
@@ -134,7 +134,10 @@ export class APIController {
       loginDTO.account = account;
       loginDTO.password = password;
       const user = await this.userService.loginUser(loginDTO);
-      return { success: true, message: '登录成功', data: user };
+      if (user) {
+        return { success: true, message: '登录成功', data: user };
+      }
+      return { success: false, message: '登录失败,请稍后再试' };
     } catch (error) {
       if (error.message === 'Invalid account') {
         return {
