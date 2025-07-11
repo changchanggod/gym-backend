@@ -29,6 +29,8 @@ export class LoginDTO {
 }
 
 export class HTMLRenderUserDTO {
+  id: number;
+
   @Rule(RuleType.string().required())
   username: string;
 

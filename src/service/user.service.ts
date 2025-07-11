@@ -67,6 +67,7 @@ export class UserService {
       throw new Error('Invalid password');
     }
     const htmlRenderUserDTO = new HTMLRenderUserDTO();
+    htmlRenderUserDTO.id = user.id;
     htmlRenderUserDTO.username = user.username;
     htmlRenderUserDTO.description = user.description;
     htmlRenderUserDTO.email = user.email;
