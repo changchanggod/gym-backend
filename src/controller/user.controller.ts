@@ -133,9 +133,9 @@ export class APIController {
       const loginDTO = new LoginDTO();
       loginDTO.account = account;
       loginDTO.password = password;
-      const user = await this.userService.loginUser(loginDTO);
-      if (user) {
-        return { success: true, message: '登录成功', data: user };
+      const id = await this.userService.loginUser(loginDTO);
+      if (id) {
+        return { success: true, message: '登录成功', data: id };
       }
       return { success: false, message: '登录失败,请稍后再试' };
     } catch (error) {

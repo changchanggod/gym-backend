@@ -66,14 +66,6 @@ export class UserService {
     if (user.password !== LoginDTO.password) {
       throw new Error('Invalid password');
     }
-    const htmlRenderUserDTO = new HTMLRenderUserDTO();
-    htmlRenderUserDTO.id = user.id;
-    htmlRenderUserDTO.username = user.username;
-    htmlRenderUserDTO.description = user.description;
-    htmlRenderUserDTO.email = user.email;
-    htmlRenderUserDTO.phone = user.phone;
-    htmlRenderUserDTO.joinEventId = user.joinEventId;
-    htmlRenderUserDTO.hostEventId = user.hostEventId;
-    return htmlRenderUserDTO;
+    return user.id;
   }
 }
