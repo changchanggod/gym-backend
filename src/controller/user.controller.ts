@@ -65,7 +65,7 @@ export class APIController {
     }
     return { success: false, message: '注册失败，请稍后再试' };
   }
-  @Patch('/updateUser/:id') // 假设路径参数为id，例如 /updateUser/123
+  @Patch('/:id') // 假设路径参数为id，例如 /updateUser/123
   async updateUser(
     @Param('id') id: number, // 从URL路径中获取id
     @Body() updateData: Partial<User> // 从请求体中获取更新数据
