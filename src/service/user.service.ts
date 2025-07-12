@@ -17,8 +17,8 @@ export class UserService {
     newUser.description = registerDTO.description;
     newUser.email = registerDTO.email;
     newUser.phone = registerDTO.phone;
-    newUser.joinEventId = [];
-    newUser.hostEventId = [];
+    newUser.joinEvents = [];
+    newUser.hostEvents = [];
 
     return await this.userRepository.save(newUser);
   }
@@ -54,8 +54,20 @@ export class UserService {
     htmlRenderUserDTO.description = user.description;
     htmlRenderUserDTO.email = user.email;
     htmlRenderUserDTO.phone = user.phone;
-    htmlRenderUserDTO.joinEventId = user.joinEventId;
-    htmlRenderUserDTO.hostEventId = user.hostEventId;
+    htmlRenderUserDTO.joinEvents = user.joinEvents.map(event => ({
+      name: event.name,
+      startTime: event.startTime,
+      endTime: event.endTime,
+      location: event.location,
+      // 只选择需要的字段，避免敏感信息
+    }));
+    htmlRenderUserDTO.hostEvents = user.hostEvents.map(event => ({
+      name: event.name,
+      startTime: event.startTime,
+      endTime: event.endTime,
+      location: event.location,
+      // 只选择需要的字段，避免敏感信息
+    }));
     return htmlRenderUserDTO;
   }
 

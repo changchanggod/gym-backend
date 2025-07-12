@@ -22,3 +22,16 @@ export class CreateEventDTO {
   @Rule(RuleType.number().required())
   organizer: number;
 }
+export class EventBriefDTO {
+  @Rule(RuleType.string().required())
+  name: string;
+
+  @Rule(RuleType.date().required())
+  startTime: Date;
+
+  @Rule(RuleType.date().required())
+  endTime: Date;
+
+  @Rule(RuleType.string().required())
+  location: string;
+}

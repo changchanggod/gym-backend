@@ -1,4 +1,5 @@
 import { Rule, RuleType } from '@midwayjs/validate';
+import { EventBriefDTO } from './event';
 
 export class RegisterDTO {
   @Rule(RuleType.string().required().min(3).max(20))
@@ -46,9 +47,7 @@ export class HTMLRenderUserDTO {
   @Rule(RuleType.string().optional().length(11))
   phone?: string;
 
-  @Rule(RuleType.array().items(RuleType.number()))
-  joinEventId: number[];
+  joinEvents: EventBriefDTO[];
 
-  @Rule(RuleType.array().items(RuleType.number()))
-  hostEventId: number[];
+  hostEvents: EventBriefDTO[];
 }
