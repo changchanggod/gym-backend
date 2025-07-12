@@ -34,6 +34,9 @@ export class HTMLRenderUserDTO {
   @Rule(RuleType.string().required())
   username: string;
 
+  @Rule(RuleType.string().required())
+  account: string;
+
   @Rule(RuleType.string().optional().min(0).max(500))
   description?: string;
 

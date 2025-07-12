@@ -48,6 +48,8 @@ export class UserService {
     }
     const htmlRenderUserDTO = new HTMLRenderUserDTO();
     htmlRenderUserDTO.username = user.username;
+    htmlRenderUserDTO.id = user.id;
+    htmlRenderUserDTO.account = user.account;
     htmlRenderUserDTO.description = user.description;
     htmlRenderUserDTO.email = user.email;
     htmlRenderUserDTO.phone = user.phone;
