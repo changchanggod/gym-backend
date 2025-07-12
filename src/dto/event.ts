@@ -1,6 +1,7 @@
 import { Rule, RuleType } from '@midwayjs/validate';
 import { EventType } from '../fixed-data/event-type';
 import { UserBriefDTO } from './user';
+import { CommentBriefDTO } from './comment';
 import { User } from '../entity/user';
 export class CreateEventDTO {
   @Rule(RuleType.string().required().min(1).max(100))
@@ -22,6 +23,39 @@ export class CreateEventDTO {
   location: string;
 
   organizer: User;
+}
+
+export class HTMLRenderEventDTO {
+  @Rule(RuleType.number().required())
+  id: number;
+
+  @Rule(RuleType.string().required().min(1).max(100))
+  name: string;
+
+  @Rule(RuleType.string().optional().min(1).max(500))
+  description?: string;
+
+  @Rule(RuleType.string().optional())
+  type?: EventType;
+
+  @Rule(RuleType.date().required())
+  startTime: Date;
+
+  @Rule(RuleType.date().required())
+  endTime: Date;
+
+  @Rule(RuleType.string().required().min(1).max(100))
+  location: string;
+
+  organizer: UserBriefDTO;
+
+  participants: UserBriefDTO[];
+
+  comments: CommentBriefDTO[];
+
+  createTime: Date;
+
+  updateTime: Date;
 }
 export class EventBriefDTO {
   @Rule(RuleType.number().required())
