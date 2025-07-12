@@ -23,10 +23,10 @@ export class User {
   @Column()
   password: string;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, default: '未设置' })
   email?: string;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, default: '未设置' })
   phone?: string;
 
   @Column({ type: 'simple-array' })
