@@ -1,6 +1,7 @@
 import { Provide } from '@midwayjs/core';
 import { User } from '../entity/user';
 import { RegisterDTO, HTMLRenderUserDTO, LoginDTO } from '../dto/user';
+import { EventBriefDTO } from '../dto/event';
 import { InjectEntityModel } from '@midwayjs/typeorm';
 import { Repository } from 'typeorm';
 @Provide()
@@ -43,7 +44,10 @@ export class UserService {
   }
 
   async getUser(id: number) {
-    const user = await this.userRepository.findOne({ where: { id } });
+    const user = await this.userRepository.findOne({
+      where: { id },
+      relations: ['joinEvents', 'hostEvents'],
+    });
     if (!user) {
       throw new Error('User not found');
     }
@@ -54,22 +58,28 @@ export class UserService {
     htmlRenderUserDTO.description = user.description;
     htmlRenderUserDTO.email = user.email;
     htmlRenderUserDTO.phone = user.phone;
-    htmlRenderUserDTO.joinEvents = user.joinEvents.map(event => ({
-      id: event.id,
-      name: event.name,
-      startTime: event.startTime,
-      endTime: event.endTime,
-      location: event.location,
-      // 只选择需要的字段，避免敏感信息
-    }));
-    htmlRenderUserDTO.hostEvents = user.hostEvents.map(event => ({
-      id: event.id,
-      name: event.name,
-      startTime: event.startTime,
-      endTime: event.endTime,
-      location: event.location,
-      // 只选择需要的字段，避免敏感信息
-    }));
+    htmlRenderUserDTO.joinEvents = user.joinEvents.map(
+      event =>
+        ({
+          id: event.id,
+          name: event.name,
+          startTime: event.startTime,
+          endTime: event.endTime,
+          location: event.location,
+          // 只选择需要的字段，避免敏感信息
+        } as EventBriefDTO)
+    );
+    htmlRenderUserDTO.hostEvents = user.hostEvents.map(
+      event =>
+        ({
+          id: event.id,
+          name: event.name,
+          startTime: event.startTime,
+          endTime: event.endTime,
+          location: event.location,
+          // 只选择需要的字段，避免敏感信息
+        } as EventBriefDTO)
+    );
     return htmlRenderUserDTO;
   }
 
