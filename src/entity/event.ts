@@ -6,9 +6,11 @@ import {
   UpdateDateColumn,
   ManyToMany,
   ManyToOne,
+  OneToMany,
 } from 'typeorm';
 import { EventType } from '../fixed-data/event-type';
 import { User } from './user';
+import { Comment } from './comment';
 
 @Entity('events')
 export class Event {
@@ -45,6 +47,10 @@ export class Event {
     nullable: false, // 组织者不能为空
   })
   organizer: User;
+
+  // 一对多关系，活动可以有多个评论
+  @OneToMany(() => Comment, comment => comment.event)
+  comments: Comment[];
 
   @CreateDateColumn()
   createTime: Date;

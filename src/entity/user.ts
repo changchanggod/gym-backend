@@ -9,6 +9,7 @@ import {
   OneToMany,
 } from 'typeorm';
 import { Event } from './event';
+import { Comment } from './comment';
 
 @Entity('users')
 export class User {
@@ -43,6 +44,10 @@ export class User {
   // 一对多关系，用户可以组织多个活动
   @OneToMany(() => Event, event => event.organizer)
   hostEvents: Event[];
+
+  // 一对多关系，用户可以有多个评论
+  @OneToMany(() => Comment, comment => comment.user)
+  comments: Comment[];
 
   @CreateDateColumn()
   createTime: Date;
