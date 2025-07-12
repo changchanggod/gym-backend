@@ -55,6 +55,7 @@ export class UserService {
     htmlRenderUserDTO.email = user.email;
     htmlRenderUserDTO.phone = user.phone;
     htmlRenderUserDTO.joinEvents = user.joinEvents.map(event => ({
+      id: event.id,
       name: event.name,
       startTime: event.startTime,
       endTime: event.endTime,
@@ -62,6 +63,7 @@ export class UserService {
       // 只选择需要的字段，避免敏感信息
     }));
     htmlRenderUserDTO.hostEvents = user.hostEvents.map(event => ({
+      id: event.id,
       name: event.name,
       startTime: event.startTime,
       endTime: event.endTime,
