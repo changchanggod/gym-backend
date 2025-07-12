@@ -14,7 +14,7 @@ export class User {
   @Column({ unique: true })
   username: string;
 
-  @Column({ type: 'text' })
+  @Column({ nullable: true, default: '这个人貌似很神秘呢···' })
   description?: string;
 
   @Column({ unique: true })
