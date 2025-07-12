@@ -19,4 +19,21 @@ export class EventService {
 
     return await this.eventRepository.save(newEvent);
   }
+
+  async updateEvent(id: number, updateData: Partial<Event>) {
+    const event = await this.eventRepository.findOne({ where: { id } });
+    if (!event) {
+      throw new Error('Event not found');
+    }
+    Object.assign(event, updateData);
+    return await this.eventRepository.save(event);
+  }
+
+  async deleteEvent(id: number) {
+    const event = await this.eventRepository.findOne({ where: { id } });
+    if (!event) {
+      throw new Error('Event not found');
+    }
+    return await this.eventRepository.remove(event);
+  }
 }
