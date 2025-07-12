@@ -32,7 +32,7 @@ export class MainConfiguration {
     this.app.use(
       cors({
         origin: '*',
-        allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+        allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
         allowHeaders: ['Content-Type', 'Authorization'],
         credentials: true,
       })
