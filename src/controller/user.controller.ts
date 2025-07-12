@@ -56,9 +56,9 @@ export class APIController {
     registerDTO.username = username;
     registerDTO.account = account;
     registerDTO.password = password;
-    registerDTO.description = description; // 保证为字符串
-    registerDTO.email = email; // 保证为字符串
-    registerDTO.phone = phone; // 保证为字符串
+    registerDTO.description = description;
+    registerDTO.email = email;
+    registerDTO.phone = phone;
     const result = await this.userService.register(registerDTO);
     if (result) {
       return { success: true, message: '注册成功', data: result };

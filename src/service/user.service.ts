@@ -14,6 +14,7 @@ export class UserService {
     newUser.username = registerDTO.username;
     newUser.account = registerDTO.account;
     newUser.password = registerDTO.password;
+    newUser.description = registerDTO.description;
     newUser.email = registerDTO.email;
     newUser.phone = registerDTO.phone;
     newUser.joinEventId = [];
