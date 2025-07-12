@@ -59,7 +59,7 @@ export class APIController {
     registerDTO.description = description;
     registerDTO.email = email;
     registerDTO.phone = phone;
-    const result = await this.userService.register(registerDTO);
+    const result = await this.userService.registerUser(registerDTO);
     if (result) {
       return { success: true, message: '注册成功', data: result };
     }

@@ -9,7 +9,7 @@ export class UserService {
   userRepository: Repository<User>;
 
   // 用户注册
-  async register(registerDTO: RegisterDTO) {
+  async registerUser(registerDTO: RegisterDTO) {
     const newUser = new User();
     newUser.username = registerDTO.username;
     newUser.account = registerDTO.account;
