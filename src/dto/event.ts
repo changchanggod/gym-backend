@@ -1,5 +1,7 @@
 import { Rule, RuleType } from '@midwayjs/validate';
 import { EventType } from '../fixed-data/event-type';
+import { UserBriefDTO } from './user';
+import { User } from '../entity/user';
 export class CreateEventDTO {
   @Rule(RuleType.string().required().min(1).max(100))
   name: string;
@@ -19,7 +21,7 @@ export class CreateEventDTO {
   @Rule(RuleType.string().required().min(1).max(100))
   location: string;
 
-  organizer: number;
+  organizer: User;
 }
 export class EventBriefDTO {
   @Rule(RuleType.number().required())

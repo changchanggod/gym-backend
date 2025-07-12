@@ -51,3 +51,11 @@ export class HTMLRenderUserDTO {
 
   hostEvents: EventBriefDTO[];
 }
+
+export class UserBriefDTO {
+  @Rule(RuleType.number().required())
+  id: number;
+
+  @Rule(RuleType.string().required())
+  username: string;
+}
