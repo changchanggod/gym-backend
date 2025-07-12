@@ -4,7 +4,11 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  ManyToMany,
+  JoinTable,
+  OneToMany,
 } from 'typeorm';
+import { Event } from './event';
 
 @Entity('users')
 export class User {
@@ -29,11 +33,16 @@ export class User {
   @Column({ nullable: true, default: '未设置' })
   phone?: string;
 
-  @Column({ type: 'simple-array' })
-  joinEventId: number[];
+  // 多对多关系，用户可以参加多个活动
+  @ManyToMany(() => Event, event => event.participants, {
+    cascade: true, // 级联操作
+  })
+  @JoinTable()
+  joinEvents: Event[];
 
-  @Column({ type: 'simple-array' })
-  hostEventId: number[];
+  // 一对多关系，用户可以组织多个活动
+  @OneToMany(() => Event, event => event.organizer)
+  hostEvents: Event[];
 
   @CreateDateColumn()
   createTime: Date;
@@ -41,5 +50,3 @@ export class User {
   @UpdateDateColumn()
   updateTime: Date;
 }
-
-// src/dto/user.dto.ts

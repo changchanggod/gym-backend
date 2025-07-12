@@ -16,11 +16,15 @@
     "forceConsistentCasingInFileNames": true,
     "typeRoots": [ "./typings", "./node_modules/@types"],
     "outDir": "dist",
-    "rootDir": "src"
+    "rootDir": "src",
+    "lib": ["ES2018", "DOM"],
+    "baseUrl": ".",
+    "paths": { // 添加：路径映射
+      "*": ["node_modules/*"]
+    }
   },
+  "include": ["src/**/*.ts"],
   "exclude": [
-    "*.js",
-    "*.ts",
     "dist",
     "node_modules",
     "test"
