@@ -21,7 +21,7 @@ export default {
         database: 'gym_database',
         synchronize: true, // 开发环境使用，生产环境建议关闭
         logging: true,
-        entities: [User, Event], // 实体类数组
+        entities: [User, Event, Comment], // 实体类数组
       },
     },
   },
