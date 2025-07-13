@@ -36,12 +36,34 @@ export class UserService {
 
   // 用户注销
   async deleteUser(id: number) {
-    const user = await this.userRepository.findOne({ where: { id } });
+    const user = await this.userRepository.findOne({
+      where: { id },
+      relations: ['joinEvents', 'hostEvents', 'hostEvents.participants'],
+    });
     if (!user) {
       throw new Error('User not found');
     }
+    user.joinEvents.forEach(event => {
+      event.participants = event.participants.filter(u => u.id !== user.id);
+    });
+    user.hostEvents.forEach(event => {
+      event.participants.forEach(participant => {
+        participant.joinEvents = participant.joinEvents.filter(
+          e => e.id !== event.id
+        );
+      });
+    });
+
     return await this.userRepository.remove(user);
   }
+
+  // async deleteUserEvent(eventId: number, userId: number) {
+  //   const user = await this.userRepository.findOne({ where: { id: userId }, relations: ['joinEvents', 'hostEvents'] });
+  //   if (!user) {
+  //     throw new Error('User not found');
+  //   }
+  //   user.joinEvents = user.joinEvents.filter(event => event.id !== eventId);
+  //   user.hostEvents = user.hostEvents.filter(event => event.id !== eventId);
 
   async getUser(id: number) {
     const user = await this.userRepository.findOne({
