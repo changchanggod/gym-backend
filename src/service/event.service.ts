@@ -19,8 +19,8 @@ export class EventService {
     newEvent.name = createEventDTO.name;
     newEvent.description = createEventDTO.description;
     newEvent.type = createEventDTO.type;
-    newEvent.startTime = createEventDTO.startTime;
-    newEvent.endTime = createEventDTO.endTime;
+    newEvent.startTime = new Date(createEventDTO.startTime);
+    newEvent.endTime = new Date(createEventDTO.endTime);
     newEvent.location = createEventDTO.location;
     newEvent.participantsMaxCount = createEventDTO.participantsMaxCount;
     newEvent.organizer = await this.userRepository.findOne({
@@ -70,8 +70,8 @@ export class EventService {
     eventDTO.name = event.name;
     eventDTO.description = event.description;
     eventDTO.type = event.type;
-    eventDTO.startTime = event.startTime;
-    eventDTO.endTime = event.endTime;
+    eventDTO.startTime = event.startTime.toISOString();
+    eventDTO.endTime = event.endTime.toISOString();
     eventDTO.location = event.location;
     eventDTO.participantsMaxCount = event.participantsMaxCount;
     eventDTO.organizer = {
