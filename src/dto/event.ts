@@ -25,7 +25,8 @@ export class CreateEventDTO {
   @Rule(RuleType.number().required())
   participantsMaxCount: number;
 
-  organizer: User;
+  @Rule(RuleType.number().required())
+  organizerId: number;
 }
 
 export class HTMLRenderEventDTO {

@@ -1,5 +1,6 @@
 import { Provide } from '@midwayjs/core';
 import { Event } from '../entity/event';
+import { User } from '../entity/user';
 import { CreateEventDTO, HTMLRenderEventDTO } from '../dto/event';
 import { UserBriefDTO } from '../dto/user';
 import { CommentBriefDTO } from '../dto/comment';
@@ -9,6 +10,10 @@ import { Repository } from 'typeorm';
 export class EventService {
   @InjectEntityModel(Event)
   eventRepository: Repository<Event>;
+
+  @InjectEntityModel(User)
+  userRepository: Repository<User>;
+
   async createEvent(createEventDTO: CreateEventDTO) {
     const newEvent = new Event();
     newEvent.name = createEventDTO.name;
@@ -18,7 +23,9 @@ export class EventService {
     newEvent.endTime = createEventDTO.endTime;
     newEvent.location = createEventDTO.location;
     newEvent.participantsMaxCount = createEventDTO.participantsMaxCount;
-    newEvent.organizer = createEventDTO.organizer; // 直接使用User对象
+    newEvent.organizer = await this.userRepository.findOne({
+      where: { id: createEventDTO.organizerId },
+    });
 
     return await this.eventRepository.save(newEvent);
   }
