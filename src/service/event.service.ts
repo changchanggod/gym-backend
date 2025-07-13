@@ -17,6 +17,7 @@ export class EventService {
     newEvent.startTime = createEventDTO.startTime;
     newEvent.endTime = createEventDTO.endTime;
     newEvent.location = createEventDTO.location;
+    newEvent.participantsMaxCount = createEventDTO.participantsMaxCount;
     newEvent.organizer = createEventDTO.organizer; // 直接使用User对象
 
     return await this.eventRepository.save(newEvent);
@@ -54,6 +55,7 @@ export class EventService {
     eventDTO.startTime = event.startTime;
     eventDTO.endTime = event.endTime;
     eventDTO.location = event.location;
+    eventDTO.participantsMaxCount = event.participantsMaxCount;
     eventDTO.organizer = {
       id: event.organizer.id,
       username: event.organizer.username,

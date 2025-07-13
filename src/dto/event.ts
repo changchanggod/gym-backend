@@ -22,6 +22,9 @@ export class CreateEventDTO {
   @Rule(RuleType.string().required().min(1).max(100))
   location: string;
 
+  @Rule(RuleType.number().required())
+  participantsMaxCount: number;
+
   organizer: User;
 }
 
@@ -46,6 +49,9 @@ export class HTMLRenderEventDTO {
 
   @Rule(RuleType.string().required().min(1).max(100))
   location: string;
+
+  @Rule(RuleType.number().required())
+  participantsMaxCount: number;
 
   organizer: UserBriefDTO;
 

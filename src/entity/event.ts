@@ -35,6 +35,9 @@ export class Event {
   @Column()
   location: string;
 
+  @Column()
+  participantsMaxCount: number;
+
   // 多对多关系，活动可以有多个参与者
   @ManyToMany(() => User, user => user.joinEvents, {
     cascade: true, // 级联操作
