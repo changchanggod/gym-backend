@@ -1,5 +1,6 @@
 import { Provide } from '@midwayjs/core';
 import { User } from '../entity/user';
+import { Event } from '../entity/event';
 import { RegisterDTO, HTMLRenderUserDTO, LoginDTO } from '../dto/user';
 import { EventBriefDTO } from '../dto/event';
 import { InjectEntityModel } from '@midwayjs/typeorm';
@@ -8,6 +9,9 @@ import { Repository } from 'typeorm';
 export class UserService {
   @InjectEntityModel(User)
   userRepository: Repository<User>;
+
+  @InjectEntityModel(Event)
+  eventRepository: Repository<Event>;
 
   // 用户注册
   async registerUser(registerDTO: RegisterDTO) {
@@ -57,13 +61,27 @@ export class UserService {
     return await this.userRepository.remove(user);
   }
 
-  // async deleteUserEvent(eventId: number, userId: number) {
-  //   const user = await this.userRepository.findOne({ where: { id: userId }, relations: ['joinEvents', 'hostEvents'] });
-  //   if (!user) {
-  //     throw new Error('User not found');
-  //   }
-  //   user.joinEvents = user.joinEvents.filter(event => event.id !== eventId);
-  //   user.hostEvents = user.hostEvents.filter(event => event.id !== eventId);
+  async deleteUserJoinEvent(eventId: number, userId: number) {
+    const user = await this.userRepository.findOne({ where: { id: userId } });
+    const event = await this.eventRepository.findOne({
+      where: { id: eventId },
+    });
+    if (!user) {
+      throw new Error('User not found');
+    }
+    if (!event) {
+      throw new Error('Event not found');
+    }
+    // 从用户的joinEvents中移除该事件
+    user.joinEvents = user.joinEvents.filter(event => event.id !== eventId);
+    event.participants = event.participants.filter(
+      participant => participant.id !== userId
+    );
+    // 更新用户和事件
+    await this.userRepository.save(user);
+    await this.eventRepository.save(event);
+    return { success: true, message: 'User event deleted successfully' };
+  }
 
   async getUser(id: number) {
     const user = await this.userRepository.findOne({

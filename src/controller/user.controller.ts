@@ -9,6 +9,7 @@ import {
 } from '@midwayjs/core';
 import { Context } from '@midwayjs/koa';
 import { UserService } from '../service/user.service';
+import { EventService } from '../service/event.service';
 import { RegisterDTO, LoginDTO } from '../dto/user';
 import { User } from '../entity/user';
 import { Del } from '@midwayjs/core';
@@ -20,6 +21,9 @@ export class APIController {
 
   @Inject()
   userService: UserService;
+
+  @Inject()
+  eventService: EventService;
 
   @Get('/:id')
   async getUser(@Param('id') id: number) {
@@ -119,6 +123,88 @@ export class APIController {
       return {
         success: false,
         message: 'Failed to delete user',
+        error: error.message,
+      };
+    }
+  }
+
+  @Del('hostEvent/:id')
+  async deleteUserHostEvent(@Param('id') id: number) {
+    try {
+      const result = await this.eventService.deleteEvent(id);
+      return {
+        success: true,
+        message: 'User event deleted successfully',
+        data: result,
+      };
+    } catch (error) {
+      if (error.message === 'User event not found') {
+        return {
+          success: false,
+          message: 'User event not found',
+          code: 404,
+        };
+      } else if (error.message === 'User not found') {
+        return {
+          success: false,
+          message: 'User not found',
+          code: 404,
+        };
+      } else if (error.message === 'Event not found') {
+        return {
+          success: false,
+          message: 'Event not found',
+          code: 404,
+        };
+      }
+      // 处理其他错误
+      return {
+        success: false,
+        message: 'Failed to delete user event',
+        error: error.message,
+      };
+    }
+  }
+
+  @Del('joinEvent/:id')
+  async deleteUserJoinEvent(
+    @Param('id') eventId: number,
+    @Body('UserId') UserId: number
+  ) {
+    try {
+      const result = await this.userService.deleteUserJoinEvent(
+        eventId,
+        UserId
+      );
+      return {
+        success: true,
+        message: 'User event deleted successfully',
+        data: result,
+      };
+    } catch (error) {
+      if (error.message === 'User event not found') {
+        return {
+          success: false,
+          message: 'User event not found',
+          code: 404,
+        };
+      } else if (error.message === 'User not found') {
+        return {
+          success: false,
+          message: 'User not found',
+          code: 404,
+        };
+      } else if (error.message === 'Event not found') {
+        return {
+          success: false,
+          message: 'Event not found',
+          code: 404,
+        };
+      }
+      // 处理其他错误
+      return {
+        success: false,
+        message: 'Failed to delete user event',
         error: error.message,
       };
     }
