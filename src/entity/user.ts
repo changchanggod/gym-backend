@@ -36,7 +36,7 @@ export class User {
 
   // 多对多关系，用户可以参加多个活动
   @ManyToMany(() => Event, event => event.participants, {
-    cascade: true, // 级联操作
+    //cascade: true, // 级联操作
   })
   @JoinTable()
   joinEvents: Event[];
