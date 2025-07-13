@@ -1,6 +1,7 @@
 import { MidwayConfig } from '@midwayjs/core';
 import { User } from '../entity/user';
 import { Event } from '../entity/event';
+import { Comment } from '../entity/comment';
 export default {
   // use for cookie sign key, should change to your own and keep security
   keys: '1752039930590_489',
