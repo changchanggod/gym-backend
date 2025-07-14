@@ -6,6 +6,7 @@ import {
   Body,
   Patch,
   Param,
+  Query,
 } from '@midwayjs/core';
 import { Context } from '@midwayjs/koa';
 import { Event } from '../entity/event';
@@ -36,15 +37,15 @@ export class EventController {
 
   @Get('/eventBriefPartly')
   async getEventBriefPartlyfilter(
-    @Body('filter') filter: EventFilterDTO,
-    @Body('page') page = 1,
-    @Body('pageSize') pageSize = 10,
-    @Body('sortField')
+    @Query('filter') filter: EventFilterDTO,
+    @Query('page') page = 1,
+    @Query('pageSize') pageSize = 10,
+    @Query('sortField')
     sortField:
       | 'startTime'
       | 'participantsMaxCount'
       | 'createTime' = 'startTime',
-    @Body('sortOrder') sortOrder: 'ASC' | 'DESC' = 'ASC'
+    @Param('sortOrder') sortOrder: 'ASC' | 'DESC' = 'ASC'
   ) {
     try {
       const data = await this.eventService.getEventBriefPartlyfilter(
