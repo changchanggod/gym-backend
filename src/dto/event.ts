@@ -79,3 +79,22 @@ export class EventBriefDTO {
   @Rule(RuleType.string().required())
   location: string;
 }
+
+export class EventFilterDTO {
+  @Rule(RuleType.string().optional())
+  name?: string;
+
+  @Rule(RuleType.string().optional())
+  location?: string;
+
+  type?: EventType;
+
+  @Rule(RuleType.date().optional())
+  startTime?: Date;
+
+  @Rule(RuleType.date().optional())
+  endTime?: Date;
+
+  @Rule(RuleType.boolean().optional())
+  isNotFull?: boolean;
+}

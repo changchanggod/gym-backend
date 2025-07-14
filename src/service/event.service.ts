@@ -1,7 +1,12 @@
 import { Provide } from '@midwayjs/core';
 import { Event } from '../entity/event';
 import { User } from '../entity/user';
-import { CreateEventDTO, HTMLRenderEventDTO } from '../dto/event';
+import {
+  CreateEventDTO,
+  HTMLRenderEventDTO,
+  EventFilterDTO,
+  EventBriefDTO,
+} from '../dto/event';
 import { UserBriefDTO } from '../dto/user';
 import { CommentBriefDTO } from '../dto/comment';
 import { InjectEntityModel } from '@midwayjs/typeorm';
@@ -57,6 +62,7 @@ export class EventService {
     );
     return await this.eventRepository.remove(event);
   }
+
   async getEvent(id: number) {
     const event = await this.eventRepository.findOne({
       where: { id },
@@ -103,5 +109,71 @@ export class EventService {
     eventDTO.createTime = event.createTime;
     eventDTO.updateTime = event.updateTime;
     return eventDTO;
+  }
+
+  async getEventBriefPartlyfilter(
+    filter: EventFilterDTO,
+    page = 1,
+    pageSize = 10,
+    sortField:
+      | 'startTime'
+      | 'participantsMaxCount'
+      | 'createTime' = 'startTime',
+    sortOrder: 'ASC' | 'DESC' = 'ASC'
+  ) {
+    const queryBuilder = this.eventRepository.createQueryBuilder('event');
+
+    // 添加过滤条件
+    if (filter.name) {
+      queryBuilder.andWhere('event.name LIKE :name', {
+        name: `%${filter.name}%`,
+      });
+    }
+
+    if (filter.type) {
+      queryBuilder.andWhere('event.type = :type', { type: filter.type });
+    }
+
+    if (filter.location) {
+      queryBuilder.andWhere('event.location LIKE :location', {
+        location: `%${filter.location}%`,
+      });
+    }
+
+    if (filter.startTime) {
+      queryBuilder.andWhere('event.startTime >= :startTime', {
+        startTime: filter.startTime,
+      });
+    }
+
+    if (filter.endTime) {
+      queryBuilder.andWhere('event.endTime <= :endTime', {
+        endTime: filter.endTime,
+      });
+    }
+
+    if (filter.isNotFull) {
+      queryBuilder
+        .leftJoin('event.participants', 'participant')
+        .groupBy('event.id')
+        .having('COUNT(participant.id) < event.participantsMaxCount');
+    }
+
+    // 添加排序和分页
+    queryBuilder
+      .orderBy(`event.${sortField}`, sortOrder)
+      .skip((page - 1) * pageSize)
+      .take(pageSize);
+
+    const [list, total] = await queryBuilder.getManyAndCount();
+    const briefEventList = list.map(event => {
+      const briefEvent = new EventBriefDTO();
+      briefEvent.endTime = event.endTime;
+      briefEvent.startTime = event.startTime;
+      briefEvent.id = event.id;
+      briefEvent.location = event.location;
+      return briefEvent;
+    });
+    return { briefEventList, total };
   }
 }

@@ -10,7 +10,11 @@ import {
 import { Context } from '@midwayjs/koa';
 import { Event } from '../entity/event';
 import { EventService } from '../service/event.service';
-import { CreateEventDTO, HTMLRenderEventDTO } from '../dto/event';
+import {
+  CreateEventDTO,
+  HTMLRenderEventDTO,
+  EventFilterDTO,
+} from '../dto/event';
 import { Del } from '@midwayjs/core';
 @Controller('/api/event')
 export class EventController {
@@ -27,6 +31,36 @@ export class EventController {
       return { success: true, message: 'OK', data: event };
     } catch (error) {
       return { success: false, message: error.message, code: 404 };
+    }
+  }
+
+  @Get('/eventBriefPartly')
+  async getEventBriefPartlyfilter(
+    @Body('filter') filter: EventFilterDTO,
+    @Body('page') page = 1,
+    @Body('pageSize') pageSize = 10,
+    @Body('sortField')
+    sortField:
+      | 'startTime'
+      | 'participantsMaxCount'
+      | 'createTime' = 'startTime',
+    @Body('sortOrder') sortOrder: 'ASC' | 'DESC' = 'ASC'
+  ) {
+    try {
+      const data = await this.eventService.getEventBriefPartlyfilter(
+        filter,
+        page,
+        pageSize,
+        sortField,
+        sortOrder
+      );
+      return {
+        success: true,
+        message: 'EventList get successfully',
+        data: data,
+      };
+    } catch (error) {
+      return { success: false, message: error.message };
     }
   }
 
