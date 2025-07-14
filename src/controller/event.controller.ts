@@ -45,7 +45,8 @@ export class EventController {
       | 'startTime'
       | 'participantsMaxCount'
       | 'createTime' = 'startTime',
-    @Param('sortOrder') sortOrder: 'ASC' | 'DESC' = 'ASC'
+    @Query('sortOrder') sortOrder: 'ASC' | 'DESC' = 'ASC',
+    @Query('userId') userId: number
   ) {
     try {
       const data = await this.eventService.getEventBriefPartlyfilter(
@@ -53,7 +54,8 @@ export class EventController {
         page,
         pageSize,
         sortField,
-        sortOrder
+        sortOrder,
+        userId
       );
       return {
         success: true,

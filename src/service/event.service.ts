@@ -119,9 +119,23 @@ export class EventService {
       | 'startTime'
       | 'participantsMaxCount'
       | 'createTime' = 'startTime',
-    sortOrder: 'ASC' | 'DESC' = 'ASC'
+    sortOrder: 'ASC' | 'DESC' = 'ASC',
+    userId: number
   ) {
-    const queryBuilder = this.eventRepository.createQueryBuilder('event');
+    const queryBuilder = this.eventRepository
+      .createQueryBuilder('event')
+      .leftJoinAndSelect('event.organizer', 'organizer')
+      .addSelect(
+        // 判断用户是否参与的子查询
+        `EXISTS (
+        SELECT 1 FROM user_event 
+        WHERE user_event.eventId = event.id 
+        AND user_event.userId = :userId
+      )`,
+        'isParticipating'
+      )
+      .setParameter('userId', userId)
+      .select('DISTINCT event.id');
 
     // 添加过滤条件
     if (filter.name) {
@@ -153,10 +167,14 @@ export class EventService {
     }
 
     if (filter.isNotFull) {
-      queryBuilder
-        .leftJoin('event.participants', 'participant')
-        .groupBy('event.id')
-        .having('COUNT(participant.id) < event.participantsMaxCount');
+      // 使用子查询统计参与者数量，避免与主查询的GROUP BY冲突
+      queryBuilder.addSelect(
+        '(SELECT COUNT(*) FROM user_event WHERE user_event.eventId = event.id)',
+        'participantCount'
+      );
+
+      // 使用HAVING过滤未满员的活动
+      queryBuilder.having('participantCount < event.participantsMaxCount');
     }
 
     // 添加排序和分页
@@ -172,6 +190,10 @@ export class EventService {
       briefEvent.startTime = event.startTime;
       briefEvent.id = event.id;
       briefEvent.location = event.location;
+      if (event.organizer.id === userId) briefEvent.state = 'host';
+      else if ((event as any).isParticipating === 'true')
+        briefEvent.state = 'join';
+      else briefEvent.state = 'toJoin';
       return briefEvent;
     });
     return { briefEventList, total };

@@ -78,6 +78,9 @@ export class EventBriefDTO {
 
   @Rule(RuleType.string().required())
   location: string;
+
+  @Rule(RuleType.string().optional()) //TODO???change to require?
+  state: string;
 }
 
 export class EventFilterDTO {
