@@ -6,7 +6,7 @@ export class CreateEventDTO {
   @Rule(RuleType.string().required().min(1).max(100))
   name: string;
 
-  @Rule(RuleType.string().optional().min(1).max(500))
+  @Rule(RuleType.string().optional().allow('').max(500))
   description?: string;
 
   @Rule(RuleType.string().optional())
