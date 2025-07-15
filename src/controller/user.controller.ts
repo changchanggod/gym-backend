@@ -161,7 +161,7 @@ export class APIController {
       // 处理其他错误
       return {
         success: false,
-        message: 'Failed to delete user event',
+        message: error.message || 'Failed to delete user event',
         error: error.message,
       };
     }
