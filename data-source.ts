@@ -1,7 +1,7 @@
 import { DataSource } from 'typeorm';
-import { User } from './entity/user';
-import { Event } from './entity/event';
-import { Comment } from './entity/comment';
+import { User } from './src/entity/user';
+import { Event } from './src/entity/event';
+import { Comment } from './src/entity/comment';
 
 export const AppDataSource = new DataSource({
   type: 'mysql', // 根据你的数据库类型修改

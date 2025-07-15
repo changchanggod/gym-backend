@@ -5,7 +5,6 @@ import { RegisterDTO, HTMLRenderUserDTO, LoginDTO } from '../dto/user';
 import { EventBriefDTO } from '../dto/event';
 import { InjectEntityModel } from '@midwayjs/typeorm';
 import { Repository } from 'typeorm';
-import { EntityManager } from 'typeorm';
 @Provide()
 export class UserService {
   @InjectEntityModel(User)
@@ -13,10 +12,6 @@ export class UserService {
 
   @InjectEntityModel(Event)
   eventRepository: Repository<Event>;
-
-  constructor(
-    private readonly entityManager: EntityManager // 注入 EntityManager
-  ) {}
 
   // 用户注册
   async registerUser(registerDTO: RegisterDTO) {
@@ -129,50 +124,41 @@ export class UserService {
   }
 
   async addUserJoinEvent(eventId: number, userId: number) {
-    // 开始事务
-    return await this.entityManager
-      .transaction(async transactionalEntityManager => {
-        // 查询用户并检查是否存在
-        const user = await transactionalEntityManager.findOne(User, {
-          where: { id: userId },
-        });
-        if (!user) {
-          throw new Error('User not found');
-        }
+    const event = await this.eventRepository.findOne({
+      where: { id: eventId },
+      relations: ['participants'],
+    });
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+      relations: ['joinEvents'],
+    });
+    if (!user) {
+      throw new Error('User not found');
+    }
+    if (!event) {
+      throw new Error('Event not found');
+    }
 
-        // 查询事件并检查是否存在
-        const event = await transactionalEntityManager.findOne(Event, {
-          where: { id: eventId },
-        });
-        if (!event) {
-          throw new Error('Event not found');
-        }
+    const isAlreadyJoined = user.joinEvents.some(e => e.id === eventId);
+    if (isAlreadyJoined) {
+      throw new Error('User already joined this event');
+    }
 
-        // 检查用户是否已加入事件
-        const isUserAlreadyJoined = user.joinEvents.some(e => e.id === eventId);
-        if (isUserAlreadyJoined) {
-          throw new Error('User has already joined this event');
-        }
-
-        // 更新关联关系
-        user.joinEvents.push(event);
-        event.participants.push(user);
-
-        // 保存更改
-        await transactionalEntityManager.save(user);
-        await transactionalEntityManager.save(event);
-
-        return { success: true, message: 'User joined event successfully' };
-      })
-      .catch(error => {
-        // 统一错误处理
-        console.error('Error joining user to event:', error);
-        return {
-          success: false,
-          message: error.message || 'Failed to join event',
-        };
-      });
+    if (
+      event.participantsMaxCount &&
+      event.participants?.length >= event.participantsMaxCount
+    ) {
+      throw new Error('Event is full');
+    }
+    if (!user.joinEvents) user.joinEvents = [];
+    if (!event.participants) event.participants = [];
+    user.joinEvents.push(event);
+    event.participants.push(user);
+    await this.eventRepository.save(event);
+    await this.userRepository.save(user);
+    return { success: true, message: 'User event joined successfully' };
   }
+
   async loginUser(LoginDTO: LoginDTO) {
     const user = await this.userRepository.findOne({
       where: { account: LoginDTO.account },

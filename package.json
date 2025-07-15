@@ -42,7 +42,10 @@
     "lint:fix": "mwts fix",
     "ci": "npm run cov",
     "build": "mwtsc --cleanOutDir",
-    "clean": "rd /s /q dist"
+    "clean": "rd /s /q dist",
+    "migration:generate": "ts-node ./node_modules/typeorm/cli.js migration:generate -d data-source src/migration/CreateUserTable -p",
+    "migration:run": "ts-node ./node_modules/typeorm/cli.js migration:run -d data-source",
+    "migration:revert": "ts-node ./node_modules/typeorm/cli.js migration:revert -d data-source"
   },
   "repository": {
     "type": "git",
