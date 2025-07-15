@@ -210,6 +210,19 @@ export class APIController {
     }
   }
 
+  @Post('/joinEvent')
+  async addUserJoinEvent(
+    @Body('eventId') eventId: number,
+    @Body('userId') userId: number
+  ) {
+    const res = await this.userService.addUserJoinEvent(eventId, userId);
+    if (res) {
+      return { success: true, message: res.message, data: res };
+    } else {
+      return { success: false, message: '参加失败,请稍后再试' };
+    }
+  }
+
   @Post('/login')
   async loginUser(
     @Body('account') account: string,
