@@ -126,16 +126,21 @@ export class EventService {
       .createQueryBuilder('event')
       .leftJoinAndSelect('event.organizer', 'organizer')
       .addSelect(
-        // 判断用户是否参与的子查询
         `EXISTS (
-        SELECT 1 FROM user_event 
-        WHERE user_event.eventId = event.id 
-        AND user_event.userId = :userId
+        SELECT 1 FROM users_join_events_events
+        WHERE users_join_events_events.eventsId = event.id 
+        AND users_join_events_events.usersId = :userId
       )`,
         'isParticipating'
       )
-      .setParameter('userId', userId)
-      .select('DISTINCT event.id');
+      .select([
+        'event.id',
+        'event.startTime',
+        'event.endTime',
+        'event.location',
+        'organizer.id',
+      ])
+      .setParameter('userId', userId);
 
     // 添加过滤条件
     if (filter.name) {
@@ -155,14 +160,16 @@ export class EventService {
     }
 
     if (filter.startTime) {
+      const Start = new Date(filter.startTime);
       queryBuilder.andWhere('event.startTime >= :startTime', {
-        startTime: filter.startTime,
+        startTime: Start,
       });
     }
 
     if (filter.endTime) {
+      const End = new Date(filter.endTime);
       queryBuilder.andWhere('event.endTime <= :endTime', {
-        endTime: filter.endTime,
+        endTime: End,
       });
     }
 
@@ -184,6 +191,7 @@ export class EventService {
       .take(pageSize);
 
     const [list, total] = await queryBuilder.getManyAndCount();
+    if (list.length === 0) throw new Error(`${filter}`);
     const briefEventList = list.map(event => {
       const briefEvent = new EventBriefDTO();
       briefEvent.endTime = event.endTime;

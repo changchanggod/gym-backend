@@ -92,11 +92,11 @@ export class EventFilterDTO {
 
   type?: EventType;
 
-  @Rule(RuleType.date().optional())
-  startTime?: Date;
+  @Rule(RuleType.string().optional())
+  startTime?: string;
 
-  @Rule(RuleType.date().optional())
-  endTime?: Date;
+  @Rule(RuleType.string().optional())
+  endTime?: string;
 
   @Rule(RuleType.boolean().optional())
   isNotFull?: boolean;
