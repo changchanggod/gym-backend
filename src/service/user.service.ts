@@ -42,21 +42,17 @@ export class UserService {
   async deleteUser(id: number) {
     const user = await this.userRepository.findOne({
       where: { id },
-      relations: ['joinEvents', 'hostEvents', 'hostEvents.participants'],
+      relations: ['hostEvents'],
     });
     if (!user) {
       throw new Error('User not found');
     }
-    user.joinEvents.forEach(event => {
-      event.participants = event.participants.filter(u => u.id !== user.id);
-    });
-    user.hostEvents.forEach(event => {
-      event.participants.forEach(participant => {
-        participant.joinEvents = participant.joinEvents.filter(
-          e => e.id !== event.id
-        );
-      });
-    });
+    user.joinEvents = [];
+    for (const event of user.hostEvents) {
+      event.participants = [];
+    }
+    await this.eventRepository.save(user.hostEvents);
+    await this.userRepository.save(user);
 
     return await this.userRepository.remove(user);
   }
@@ -79,7 +75,6 @@ export class UserService {
     );
     // 更新用户和事件
     await this.userRepository.save(user);
-    await this.eventRepository.save(event);
     return { success: true, message: 'User event deleted successfully' };
   }
 
@@ -153,8 +148,6 @@ export class UserService {
     if (!user.joinEvents) user.joinEvents = [];
     if (!event.participants) event.participants = [];
     user.joinEvents.push(event);
-    event.participants.push(user);
-    await this.eventRepository.save(event);
     await this.userRepository.save(user);
     return { success: true, message: 'User event joined successfully' };
   }
