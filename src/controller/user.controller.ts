@@ -6,13 +6,13 @@ import {
   Body,
   Patch,
   Param,
+  Del,
 } from '@midwayjs/core';
 import { Context } from '@midwayjs/koa';
 import { UserService } from '../service/user.service';
 import { EventService } from '../service/event.service';
 import { RegisterDTO, LoginDTO } from '../dto/user';
 import { User } from '../entity/user';
-import { Del } from '@midwayjs/core';
 
 @Controller('/api/user')
 export class APIController {
@@ -128,8 +128,9 @@ export class APIController {
     }
   }
 
-  @Del('hostEvent/:id')
+  @Del('/hostEvent/:id')
   async deleteUserHostEvent(@Param('id') id: number) {
+    console.log('deleteUserHostEvent method is called with id:', id);
     try {
       const result = await this.eventService.deleteEvent(id);
       return {
@@ -166,7 +167,7 @@ export class APIController {
     }
   }
 
-  @Del('joinEvent/:id')
+  @Del('/joinEvent/:id')
   async deleteUserJoinEvent(
     @Param('id') eventId: number,
     @Body('UserId') UserId: number
