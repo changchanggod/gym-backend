@@ -52,14 +52,20 @@ export class EventService {
     if (!event) {
       throw new Error('Event not found');
     }
-    event.participants.forEach(participant => {
-      participant.joinEvents = participant.joinEvents.filter(
+    if (event.participants) {
+      event.participants.forEach(participant => {
+        if (participant.joinEvents) {
+          participant.joinEvents = participant.joinEvents.filter(
+            e => e.id !== event.id
+          );
+        }
+      });
+    }
+    if (event.organizer.hostEvents) {
+      event.organizer.hostEvents = event.organizer.hostEvents.filter(
         e => e.id !== event.id
       );
-    });
-    event.organizer.hostEvents = event.organizer.hostEvents.filter(
-      e => e.id !== event.id
-    );
+    }
     return await this.eventRepository.remove(event);
   }
 
