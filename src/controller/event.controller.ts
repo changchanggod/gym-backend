@@ -17,6 +17,7 @@ import {
   EventFilterDTO,
 } from '../dto/event';
 import { Del } from '@midwayjs/core';
+import { EventType } from '../fixed-data/event-type';
 @Controller('/api/event')
 export class EventController {
   @Inject()
@@ -37,7 +38,12 @@ export class EventController {
 
   @Get('/eventBriefPartly')
   async getEventBriefPartlyfilter(
-    @Query('filter') filter: EventFilterDTO,
+    @Query('name') name: string,
+    @Query('type') type: string,
+    @Query('location') location: string,
+    @Query('startTime') startTime: string,
+    @Query('endTime') endTime: string,
+    @Query('isNotFull') isNotFull: string,
     @Query('page') page = 1,
     @Query('pageSize') pageSize = 10,
     @Query('sortField')
@@ -49,6 +55,31 @@ export class EventController {
     @Query('userId') userId: number
   ) {
     try {
+      const filter = new EventFilterDTO();
+      filter.name = name;
+      filter.endTime = new Date(endTime);
+      filter.startTime = new Date(startTime);
+      filter.isNotFull = isNotFull === 'true';
+      switch (type) {
+        case 'athletics':
+          filter.type = EventType.ATHLETICS;
+          break;
+        case 'ballGames':
+          filter.type = EventType.BALLGAMES;
+          break;
+        case 'waterSports':
+          filter.type = EventType.WATERSPORTS;
+          break;
+        case 'combatSports':
+          filter.type = EventType.COMBATSPORTS;
+          break;
+        case 'extremeSports':
+          filter.type = EventType.EXTREMESPORTS;
+          break;
+        case 'other':
+          filter.type = EventType.OTHER;
+          break;
+      }
       const data = await this.eventService.getEventBriefPartlyfilter(
         filter,
         page,
@@ -57,11 +88,17 @@ export class EventController {
         sortOrder,
         userId
       );
-      return {
-        success: true,
-        message: 'EventList get successfully',
-        data: data,
-      };
+      if (data)
+        return {
+          success: true,
+          message: 'EventList get successfully',
+          data: data,
+        };
+      else
+        return {
+          success: false,
+          message: 'EventList get failed',
+        };
     } catch (error) {
       return { success: false, message: error.message };
     }
