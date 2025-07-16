@@ -72,7 +72,7 @@ export class EventService {
   async getEvent(id: number) {
     const event = await this.eventRepository.findOne({
       where: { id },
-      relations: ['organizer', 'participants', 'comments'],
+      relations: ['organizer', 'participants', 'comments', 'comments.user'],
     });
     if (!event) {
       throw new Error('Event not found');
