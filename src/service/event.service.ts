@@ -149,6 +149,7 @@ export class EventService {
       'event.startTime',
       'event.endTime',
       'event.location',
+      'event.name',
       'event.participantsMaxCount',
       'organizer.id',
     ]);
@@ -227,6 +228,7 @@ export class EventService {
       briefEvent.startTime = event.startTime;
       briefEvent.id = event.id;
       briefEvent.location = event.location;
+      briefEvent.name = event.name;
       if (event.organizer.id === userId) {
         briefEvent.state = 'host';
       } else if (joinedEventIds.has(event.id)) {
