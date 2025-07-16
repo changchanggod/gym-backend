@@ -42,7 +42,7 @@ export class UserService {
   async deleteUser(id: number) {
     const user = await this.userRepository.findOne({
       where: { id },
-      relations: ['hostEvents'],
+      relations: ['hostEvents', 'joinEvents', 'hostEvents.participants'],
     });
     if (!user) {
       throw new Error(`User ${id} not found`);
@@ -58,9 +58,13 @@ export class UserService {
   }
 
   async deleteUserJoinEvent(eventId: number, userId: number) {
-    const user = await this.userRepository.findOne({ where: { id: userId } });
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+      relations: ['joinEvents'],
+    });
     const event = await this.eventRepository.findOne({
       where: { id: eventId },
+      relations: ['participants'],
     });
     if (!user) {
       throw new Error(`User ${userId} not found`);
