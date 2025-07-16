@@ -170,12 +170,12 @@ export class APIController {
   @Del('/joinEvent/:id')
   async deleteUserJoinEvent(
     @Param('id') eventId: number,
-    @Body('UserId') UserId: number
+    @Body('userId') userId: number
   ) {
     try {
       const result = await this.userService.deleteUserJoinEvent(
         eventId,
-        UserId
+        userId
       );
       return {
         success: true,
@@ -205,7 +205,7 @@ export class APIController {
       // 处理其他错误
       return {
         success: false,
-        message: 'Failed to delete user event',
+        message: error.message || 'Failed to delete user event',
         error: error.message,
       };
     }
@@ -216,11 +216,18 @@ export class APIController {
     @Body('eventId') eventId: number,
     @Body('userId') userId: number
   ) {
-    const res = await this.userService.addUserJoinEvent(eventId, userId);
-    if (res) {
-      return { success: true, message: res.message, data: res };
-    } else {
-      return { success: false, message: '参加失败,请稍后再试' };
+    try {
+      const res = await this.userService.addUserJoinEvent(eventId, userId);
+      if (res) {
+        return { success: true, message: res.message, data: res };
+      } else {
+        return { success: false, message: '参加失败,请稍后再试' };
+      }
+    } catch (error) {
+      return {
+        success: false,
+        message: error.message || '参加失败,请稍后再试',
+      };
     }
   }
 
