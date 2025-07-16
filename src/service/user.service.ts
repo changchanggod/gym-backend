@@ -63,16 +63,24 @@ export class UserService {
       where: { id: eventId },
     });
     if (!user) {
-      throw new Error('User not found');
+      throw new Error(`User ${userId} not found`);
     }
     if (!event) {
-      throw new Error('Event not found');
+      throw new Error(`Event ${eventId} not found`);
     }
     // 从用户的joinEvents中移除该事件
-    user.joinEvents = user.joinEvents.filter(event => event.id !== eventId);
-    event.participants = event.participants.filter(
-      participant => participant.id !== userId
-    );
+    if (user.joinEvents) {
+      user.joinEvents = user.joinEvents.filter(event => event.id !== eventId);
+    } else {
+      throw new Error(`User ${userId} has not joined any event`);
+    }
+    if (event.participants) {
+      event.participants = event.participants.filter(
+        participant => participant.id !== userId
+      );
+    } else {
+      throw new Error(`The event ${eventId} has no participants`);
+    }
     // 更新用户和事件
     await this.userRepository.save(user);
     return { success: true, message: 'User event deleted successfully' };
