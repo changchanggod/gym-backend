@@ -130,23 +130,28 @@ export class EventService {
   ) {
     const queryBuilder = this.eventRepository
       .createQueryBuilder('event')
-      .leftJoinAndSelect('event.organizer', 'organizer')
-      .addSelect(
-        `EXISTS (
-        SELECT 1 FROM users_join_events_events
-        WHERE users_join_events_events.eventsId = event.id 
-        AND users_join_events_events.usersId = :userId
-      )`,
-        'isParticipating'
-      )
-      .select([
-        'event.id',
-        'event.startTime',
-        'event.endTime',
-        'event.location',
-        'organizer.id',
-      ])
+      .leftJoinAndSelect('event.organizer', 'organizer');
+
+    // 添加 isParticipating 子查询
+    const subQuery = this.eventRepository
+      .createQueryBuilder()
+      .select('1')
+      .from('users_join_events_events', 'u')
+      .where('u.eventsId = event.id')
+      .andWhere('u.usersId = :userId');
+
+    queryBuilder
+      .addSelect(`(${subQuery.getQuery()})`, 'isParticipating')
       .setParameter('userId', userId);
+
+    queryBuilder.select([
+      'event.id',
+      'event.startTime',
+      'event.endTime',
+      'event.location',
+      'event.participantsMaxCount',
+      'organizer.id',
+    ]);
 
     // 添加过滤条件
     if (filter.name) {
@@ -168,14 +173,14 @@ export class EventService {
     if (filter.startTime) {
       const Start = new Date(filter.startTime);
       queryBuilder.andWhere('event.startTime >= :startTime', {
-        startTime: Start,
+        startTime: Start.toISOString(),
       });
     }
 
     if (filter.endTime) {
       const End = new Date(filter.endTime);
       queryBuilder.andWhere('event.endTime <= :endTime', {
-        endTime: End,
+        endTime: End.toISOString(),
       });
     }
 
@@ -196,18 +201,39 @@ export class EventService {
       .skip((page - 1) * pageSize)
       .take(pageSize);
 
+    const sql = queryBuilder.getSql();
+    const params = queryBuilder.getParameters();
+    console.log('Executed SQL:', sql);
+    console.log('Query Parameters:', params);
     const [list, total] = await queryBuilder.getManyAndCount();
+
+    const joinedEventIds = new Set<number>();
+    if (list.length > 0) {
+      const ids = list.map(e => e.id);
+      const rows = await this.eventRepository.query(
+        `SELECT eventsId FROM users_join_events_events
+     WHERE usersId = ? AND eventsId IN (?)`,
+        [userId, ids]
+      );
+      rows.forEach((row: any) => joinedEventIds.add(row.eventsId));
+    }
+
     if (list.length === 0) throw new Error(`${filter}`);
     const briefEventList = list.map(event => {
+      console.log('isParticipating type:', typeof event['isParticipating']);
+      console.log('isParticipating value:', event['isParticipating']);
       const briefEvent = new EventBriefDTO();
       briefEvent.endTime = event.endTime;
       briefEvent.startTime = event.startTime;
       briefEvent.id = event.id;
       briefEvent.location = event.location;
-      if (event.organizer.id === userId) briefEvent.state = 'host';
-      else if ((event as any).isParticipating === 'true')
+      if (event.organizer.id === userId) {
+        briefEvent.state = 'host';
+      } else if (joinedEventIds.has(event.id)) {
         briefEvent.state = 'join';
-      else briefEvent.state = 'toJoin';
+      } else {
+        briefEvent.state = 'toJoin';
+      }
       return briefEvent;
     });
     return { briefEventList, total };
