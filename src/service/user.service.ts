@@ -32,7 +32,7 @@ export class UserService {
   async updateUser(id: number, updateData: Partial<User>) {
     const user = await this.userRepository.findOne({ where: { id } });
     if (!user) {
-      throw new Error('User not found');
+      throw new Error(`User ${id} not found`);
     }
     Object.assign(user, updateData);
     return await this.userRepository.save(user);
@@ -45,7 +45,7 @@ export class UserService {
       relations: ['hostEvents'],
     });
     if (!user) {
-      throw new Error('User not found');
+      throw new Error(`User ${id} not found`);
     }
     user.joinEvents = [];
     for (const event of user.hostEvents) {
@@ -92,7 +92,7 @@ export class UserService {
       relations: ['joinEvents', 'hostEvents'],
     });
     if (!user) {
-      throw new Error('User not found');
+      throw new Error(`User ${id} not found`);
     }
     const htmlRenderUserDTO = new HTMLRenderUserDTO();
     htmlRenderUserDTO.username = user.username;
@@ -136,22 +136,22 @@ export class UserService {
       relations: ['joinEvents'],
     });
     if (!user) {
-      throw new Error('User not found');
+      throw new Error(`User ${userId} not found`);
     }
     if (!event) {
-      throw new Error('Event not found');
+      throw new Error(`Event ${eventId} not found`);
     }
 
     const isAlreadyJoined = user.joinEvents.some(e => e.id === eventId);
     if (isAlreadyJoined) {
-      throw new Error('User already joined this event');
+      throw new Error(`User ${userId} already joined this event ${eventId}`);
     }
 
     if (
       event.participantsMaxCount &&
       event.participants?.length >= event.participantsMaxCount
     ) {
-      throw new Error('Event is full');
+      throw new Error(`Event ${eventId} is full`);
     }
     if (!user.joinEvents) user.joinEvents = [];
     if (!event.participants) event.participants = [];
