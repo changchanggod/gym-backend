@@ -221,8 +221,6 @@ export class EventService {
 
     if (list.length === 0) throw new Error(`${filter}`);
     const briefEventList = list.map(event => {
-      console.log('isParticipating type:', typeof event['isParticipating']);
-      console.log('isParticipating value:', event['isParticipating']);
       const briefEvent = new EventBriefDTO();
       briefEvent.endTime = event.endTime;
       briefEvent.startTime = event.startTime;
