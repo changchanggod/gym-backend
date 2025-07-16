@@ -113,6 +113,7 @@ export class UserService {
           startTime: event.startTime,
           endTime: event.endTime,
           location: event.location,
+          state: 'join',
           // 只选择需要的字段，避免敏感信息
         } as EventBriefDTO)
     );
@@ -124,6 +125,7 @@ export class UserService {
           startTime: event.startTime,
           endTime: event.endTime,
           location: event.location,
+          state: 'host',
           // 只选择需要的字段，避免敏感信息
         } as EventBriefDTO)
     );
