@@ -118,6 +118,26 @@ export class EventController {
     }
   }
 
+  @Post('/comment')
+  async createEventComment(
+    @Body('userId') userId: number,
+    @Body('eventId') eventId: number,
+    @Body('commentContent') content: string
+  ) {
+    try {
+      const comment = this.eventService.createEventComment(
+        eventId,
+        userId,
+        content
+      );
+      if (comment) {
+        return { success: true, message: 'comment create success' };
+      } else return { success: false, message: 'comment create fail' };
+    } catch (error) {
+      return { success: false, message: error.message };
+    }
+  }
+
   @Patch('/:id')
   async updateEvent(
     @Param('id') id: number,

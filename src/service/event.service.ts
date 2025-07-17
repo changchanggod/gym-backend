@@ -1,6 +1,7 @@
 import { Provide } from '@midwayjs/core';
 import { Event } from '../entity/event';
 import { User } from '../entity/user';
+import { Comment } from '../entity/comment';
 import {
   CreateEventDTO,
   HTMLRenderEventDTO,
@@ -19,6 +20,9 @@ export class EventService {
   @InjectEntityModel(User)
   userRepository: Repository<User>;
 
+  @InjectEntityModel(Comment)
+  commentRepository: Repository<Comment>;
+
   async createEvent(createEventDTO: CreateEventDTO) {
     const newEvent = new Event();
     newEvent.name = createEventDTO.name;
@@ -33,6 +37,18 @@ export class EventService {
     });
 
     return await this.eventRepository.save(newEvent);
+  }
+
+  async createEventComment(eventId: number, userId: number, content: string) {
+    const comment = new Comment();
+    comment.content = content;
+    comment.event = await this.eventRepository.findOne({
+      where: { id: eventId },
+    });
+    comment.user = await this.userRepository.findOne({
+      where: { id: userId },
+    });
+    return await this.commentRepository.save(comment);
   }
 
   async updateEvent(id: number, updateData: Partial<Event>) {
