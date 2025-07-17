@@ -40,7 +40,7 @@ export class EventService {
   }
 
   async createEventComment(eventId: number, userId: number, content: string) {
-    const comment = new Comment();
+    let comment = new Comment();
     comment.content = content;
     comment.event = await this.eventRepository.findOne({
       where: { id: eventId },
@@ -48,13 +48,14 @@ export class EventService {
     comment.user = await this.userRepository.findOne({
       where: { id: userId },
     });
-    await this.commentRepository.save(comment);
+    comment = await this.commentRepository.save(comment);
     const commentBriefDTO = new CommentBriefDTO();
     commentBriefDTO.content = content;
     commentBriefDTO.user = new UserBriefDTO();
     commentBriefDTO.user.id = userId;
     commentBriefDTO.user.username = comment.user.username;
     commentBriefDTO.id = comment.id;
+    commentBriefDTO.createTime = comment.createTime;
     return commentBriefDTO;
   }
 

@@ -125,7 +125,7 @@ export class EventController {
     @Body('commentContent') content: string
   ) {
     try {
-      const comment = this.eventService.createEventComment(
+      const comment = await this.eventService.createEventComment(
         eventId,
         userId,
         content
@@ -138,7 +138,10 @@ export class EventController {
         };
       } else return { success: false, message: 'comment create fail' };
     } catch (error) {
-      return { success: false, message: error.message };
+      return {
+        success: false,
+        message: error.message || 'comment create fail',
+      };
     }
   }
 
