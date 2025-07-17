@@ -48,7 +48,13 @@ export class EventService {
     comment.user = await this.userRepository.findOne({
       where: { id: userId },
     });
-    return await this.commentRepository.save(comment);
+    await this.commentRepository.save(comment);
+    const commentBriefDTO = new CommentBriefDTO();
+    commentBriefDTO.content = content;
+    commentBriefDTO.user.id = userId;
+    commentBriefDTO.user.username = comment.user.username;
+    commentBriefDTO.id = comment.id;
+    return commentBriefDTO;
   }
 
   async updateEvent(id: number, updateData: Partial<Event>) {

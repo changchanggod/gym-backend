@@ -131,7 +131,11 @@ export class EventController {
         content
       );
       if (comment) {
-        return { success: true, message: 'comment create success' };
+        return {
+          success: true,
+          message: 'comment create success',
+          data: comment,
+        };
       } else return { success: false, message: 'comment create fail' };
     } catch (error) {
       return { success: false, message: error.message };
