@@ -18,6 +18,7 @@ export class Comment {
 
   // 多对一关系，评论属于一个用户
   @ManyToOne(() => User, user => user.comments, {
+    onDelete: 'CASCADE',
     nullable: false, // 用户不能为空
   })
   user: User;
