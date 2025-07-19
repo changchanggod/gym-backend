@@ -57,6 +57,7 @@ export class EventController {
     try {
       const filter = new EventFilterDTO();
       filter.name = name;
+      filter.location = location;
       filter.endTime = endTime;
       filter.startTime = startTime;
       filter.isNotFull = isNotFull === 'true';
