@@ -146,6 +146,26 @@ export class EventController {
     }
   }
 
+  @Patch('/comment/:id')
+  async updateEventComment(
+    @Param('id') id: number,
+    @Body('commentContent') content: string
+  ) {
+    try {
+      const updatedComment = await this.eventService.updateEventComment(
+        id,
+        content
+      );
+      return {
+        success: true,
+        message: content || 'Event updated successfully',
+        data: updatedComment,
+      };
+    } catch (error) {
+      return { success: false, message: error.message };
+    }
+  }
+
   @Patch('/:id')
   async updateEvent(
     @Param('id') id: number,

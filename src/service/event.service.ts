@@ -59,6 +59,24 @@ export class EventService {
     return commentBriefDTO;
   }
 
+  async updateEventComment(commentId: number, content: string) {
+    const updateComment = await this.commentRepository.findOne({
+      where: { id: commentId },
+      relations: ['user'],
+    });
+    if (!updateComment) throw new Error('comment not found');
+    updateComment.content = content;
+    const comment = await this.commentRepository.save(updateComment);
+    const commentBriefDTO = new CommentBriefDTO();
+    commentBriefDTO.content = content;
+    commentBriefDTO.user = new UserBriefDTO();
+    commentBriefDTO.user.id = comment.user.id;
+    commentBriefDTO.user.username = comment.user.username;
+    commentBriefDTO.id = comment.id;
+    commentBriefDTO.createTime = comment.createTime;
+    return commentBriefDTO;
+  }
+
   async updateEvent(id: number, updateData: Partial<Event>) {
     const event = await this.eventRepository.findOne({ where: { id } });
     if (!event) {
