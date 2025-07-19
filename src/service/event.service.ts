@@ -120,7 +120,6 @@ export class EventService {
         ({
           id: participant.id,
           username: participant.username,
-          email: participant.email,
         } as UserBriefDTO)
     );
     eventDTO.comments = event.comments.map(
@@ -131,7 +130,6 @@ export class EventService {
           user: {
             id: comment.user.id,
             username: comment.user.username,
-            email: comment.user.email,
           } as UserBriefDTO,
           createTime: comment.createTime,
         } as CommentBriefDTO)
