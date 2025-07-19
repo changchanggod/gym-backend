@@ -166,6 +166,23 @@ export class EventController {
     }
   }
 
+  @Del('/comment/:id')
+  async deleteEventComment(@Param('id') id: number) {
+    try {
+      const res = await this.eventService.deleteEventComment(id);
+      return {
+        success: true,
+        message: '删除评论成功',
+        data: res,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: error.message || '删除评论失败',
+      };
+    }
+  }
+
   @Patch('/:id')
   async updateEvent(
     @Param('id') id: number,

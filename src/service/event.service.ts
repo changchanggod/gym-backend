@@ -77,6 +77,13 @@ export class EventService {
     return commentBriefDTO;
   }
 
+  async deleteEventComment(id: number) {
+    const comment = await this.commentRepository.findOne({
+      where: { id: id },
+    });
+    return await this.commentRepository.remove(comment);
+  }
+
   async updateEvent(id: number, updateData: Partial<Event>) {
     const event = await this.eventRepository.findOne({ where: { id } });
     if (!event) {
