@@ -61,6 +61,6 @@ export class User {
   @UpdateDateColumn()
   updateTime: Date;
 
-  @Column()
+  @Column({ default: 1 })
   privateStatus: number;
 }
