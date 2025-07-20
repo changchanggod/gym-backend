@@ -128,6 +128,7 @@ export class UserService {
         'hostEvents',
         'joinEvents.participants',
         'hostEvents.participants',
+        'follows',
       ],
     });
     if (!user) {
@@ -170,6 +171,14 @@ export class UserService {
           // 只选择需要的字段，避免敏感信息
         } as EventBriefDTO)
     );
+    htmlRenderUserDTO.follows = user.follows.map(follow => ({
+      id: follow.id,
+      username: follow.username,
+      account: follow.account,
+      email: follow.email,
+      phone: follow.phone,
+      privateStatus: follow.privateStatus,
+    }));
     return htmlRenderUserDTO;
   }
 

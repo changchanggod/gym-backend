@@ -50,6 +50,8 @@ export class HTMLRenderUserDTO {
   joinEvents: EventBriefDTO[];
 
   hostEvents: EventBriefDTO[];
+
+  follows: UserListDTO[];
 }
 
 export class UserBriefDTO {
