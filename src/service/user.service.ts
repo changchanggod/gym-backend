@@ -276,6 +276,7 @@ export class UserService {
     if (!user) {
       throw new Error(`User with id ${followerId} not found`);
     }
+    if (!follower.follows) follower.follows = [];
     follower.follows.push(user);
     return await this.userRepository.save(follower);
   }
