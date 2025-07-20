@@ -59,3 +59,20 @@ export class UserBriefDTO {
   @Rule(RuleType.string().required())
   username: string;
 }
+
+export class UserListDTO {
+  @Rule(RuleType.string().required())
+  username: string;
+
+  @Rule(RuleType.string().required())
+  account: string;
+
+  @Rule(RuleType.string().optional().email())
+  email?: string;
+
+  @Rule(RuleType.string().optional().length(11))
+  phone?: string;
+
+  @Rule(RuleType.number().required())
+  privateStatus: number;
+}
