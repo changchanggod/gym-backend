@@ -88,6 +88,12 @@ export class EventBriefDTO {
   @Rule(RuleType.string().required())
   location: string;
 
+  @Rule(RuleType.number().required())
+  participantsCount: number;
+
+  @Rule(RuleType.number().required())
+  participantsMaxCount: number;
+
   @Rule(RuleType.string().optional()) //TODO???change to require?
   state: string;
 }

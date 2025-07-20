@@ -179,7 +179,8 @@ export class EventService {
   ) {
     const queryBuilder = this.eventRepository
       .createQueryBuilder('event')
-      .leftJoinAndSelect('event.organizer', 'organizer');
+      .leftJoinAndSelect('event.organizer', 'organizer')
+      .loadRelationCountAndMap('event.participantsCount', 'event.participants');
 
     // 添加 isParticipating 子查询
     const subQuery = this.eventRepository
@@ -278,6 +279,8 @@ export class EventService {
       briefEvent.location = event.location;
       briefEvent.name = event.name;
       briefEvent.registerEndTime = event.registerEndTime.toISOString();
+      briefEvent.participantsMaxCount = event.participantsMaxCount;
+      briefEvent.participantsCount = (event as any).participantsCount;
       if (event.organizer.id === userId) {
         briefEvent.state = 'host';
       } else if (joinedEventIds.has(event.id)) {

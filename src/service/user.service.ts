@@ -111,7 +111,12 @@ export class UserService {
   async getUser(id: number) {
     const user = await this.userRepository.findOne({
       where: { id },
-      relations: ['joinEvents', 'hostEvents'],
+      relations: [
+        'joinEvents',
+        'hostEvents',
+        'joinEvents.participants',
+        'hostEvents.participants',
+      ],
     });
     if (!user) {
       throw new Error(`User ${id} not found`);
@@ -133,6 +138,8 @@ export class UserService {
           registerEndTime: event.registerEndTime.toISOString(),
           location: event.location,
           state: 'join',
+          participantsCount: event.participants.length,
+          participantsMaxCount: event.participantsMaxCount,
           // 只选择需要的字段，避免敏感信息
         } as EventBriefDTO)
     );
@@ -146,6 +153,8 @@ export class UserService {
           registerEndTime: event.registerEndTime.toISOString(),
           location: event.location,
           state: 'host',
+          participantsCount: event.participants.length,
+          participantsMaxCount: event.participantsMaxCount,
           // 只选择需要的字段，避免敏感信息
         } as EventBriefDTO)
     );
