@@ -52,8 +52,16 @@ export class User {
   @OneToMany(() => Comment, comment => comment.user)
   comments: Comment[];
 
-  @OneToMany(() => User, null)
+  @ManyToMany(() => User, user => user.followers)
+  @JoinTable({
+    name: 'user_follows',
+    joinColumn: { name: 'follower_id', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'following_id', referencedColumnName: 'id' },
+  })
   follows: User[];
+
+  @ManyToMany(() => User, user => user.follows)
+  followers: User[];
 
   @CreateDateColumn()
   createTime: Date;

@@ -74,6 +74,37 @@ export class APIController {
     }
   }
 
+  @Get('/followsList')
+  async getFollowsList(
+    @Query('userId') userId: number,
+    @Query('username') username: string,
+    @Query('page') page = 1,
+    @Query('pageSize') pageSize = 10
+  ) {
+    try {
+      const data = await this.userService.getFollowsList(
+        userId,
+        username,
+        page,
+        pageSize
+      );
+
+      if (data)
+        return {
+          success: true,
+          message: 'FollowsList get successfully',
+          data: data,
+        };
+      else
+        return {
+          success: false,
+          message: 'FollowsList get failed',
+        };
+    } catch (error) {
+      return { success: false, message: error.message };
+    }
+  }
+
   @Post()
   async registerUser(
     @Body('username') username: string,
