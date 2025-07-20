@@ -47,6 +47,9 @@ export class HTMLRenderEventDTO {
   @Rule(RuleType.string().required())
   endTime: string;
 
+  @Rule(RuleType.string().required())
+  registerEndTime: string;
+
   @Rule(RuleType.string().required().min(1).max(100))
   location: string;
 
@@ -75,6 +78,9 @@ export class EventBriefDTO {
 
   @Rule(RuleType.string().required())
   endTime: string;
+
+  @Rule(RuleType.string().required())
+  registerEndTime: string;
 
   @Rule(RuleType.string().required())
   location: string;
