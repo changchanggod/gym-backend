@@ -70,11 +70,11 @@ export class EventBriefDTO {
   @Rule(RuleType.string().required())
   name: string;
 
-  @Rule(RuleType.date().required())
-  startTime: Date;
+  @Rule(RuleType.string().required())
+  startTime: string;
 
-  @Rule(RuleType.date().required())
-  endTime: Date;
+  @Rule(RuleType.string().required())
+  endTime: string;
 
   @Rule(RuleType.string().required())
   location: string;

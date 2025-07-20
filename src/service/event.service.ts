@@ -269,8 +269,8 @@ export class EventService {
     if (list.length === 0) throw new Error(`${filter}`);
     const briefEventList = list.map(event => {
       const briefEvent = new EventBriefDTO();
-      briefEvent.endTime = event.endTime;
-      briefEvent.startTime = event.startTime;
+      briefEvent.endTime = event.endTime.toISOString();
+      briefEvent.startTime = event.startTime.toISOString();
       briefEvent.id = event.id;
       briefEvent.location = event.location;
       briefEvent.name = event.name;

@@ -128,8 +128,8 @@ export class UserService {
         ({
           id: event.id,
           name: event.name,
-          startTime: event.startTime,
-          endTime: event.endTime,
+          startTime: event.startTime.toISOString(),
+          endTime: event.endTime.toISOString(),
           location: event.location,
           state: 'join',
           // 只选择需要的字段，避免敏感信息
@@ -140,8 +140,8 @@ export class UserService {
         ({
           id: event.id,
           name: event.name,
-          startTime: event.startTime,
-          endTime: event.endTime,
+          startTime: event.startTime.toISOString(),
+          endTime: event.endTime.toISOString(),
           location: event.location,
           state: 'host',
           // 只选择需要的字段，避免敏感信息
