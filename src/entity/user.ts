@@ -52,9 +52,15 @@ export class User {
   @OneToMany(() => Comment, comment => comment.user)
   comments: Comment[];
 
+  @OneToMany(() => User, null)
+  follows: User[];
+
   @CreateDateColumn()
   createTime: Date;
 
   @UpdateDateColumn()
   updateTime: Date;
+
+  @Column()
+  privateStatus: number;
 }

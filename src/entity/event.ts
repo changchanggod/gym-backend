@@ -32,6 +32,9 @@ export class Event {
   @Column({ type: 'timestamp' })
   endTime: Date;
 
+  @Column({ type: 'timestamp' })
+  registerEndTime: Date;
+
   @Column()
   location: string;
 
