@@ -1,7 +1,12 @@
 import { Provide } from '@midwayjs/core';
 import { User } from '../entity/user';
 import { Event } from '../entity/event';
-import { RegisterDTO, HTMLRenderUserDTO, LoginDTO } from '../dto/user';
+import {
+  RegisterDTO,
+  HTMLRenderUserDTO,
+  LoginDTO,
+  UserListDTO,
+} from '../dto/user';
 import { EventBriefDTO } from '../dto/event';
 import { InjectEntityModel } from '@midwayjs/typeorm';
 import { Repository } from 'typeorm';
@@ -143,6 +148,53 @@ export class UserService {
         } as EventBriefDTO)
     );
     return htmlRenderUserDTO;
+  }
+
+  async getUserList(username: string, page = 1, pageSize = 10) {
+    const queryBuilder = this.userRepository
+      .createQueryBuilder('user')
+      .select([
+        'user.id',
+        'user.username',
+        'user.account',
+        'user.email',
+        'user.phone',
+        'user.privateStatus',
+        'user.createTime',
+      ]);
+
+    // 添加用户名搜索条件
+    if (username) {
+      queryBuilder.andWhere('user.username LIKE :username', {
+        username: `%${username}%`,
+      });
+    }
+
+    // 添加排序和分页
+    queryBuilder
+      .orderBy('user.createTime', 'DESC') // 默认按创建时间降序排列
+      .skip((page - 1) * pageSize)
+      .take(pageSize);
+
+    const sql = queryBuilder.getSql();
+    const params = queryBuilder.getParameters();
+    console.log('Executed SQL:', sql);
+    console.log('Query Parameters:', params);
+
+    const [list, total] = await queryBuilder.getManyAndCount();
+
+    const userList = list.map(user => {
+      const userDTO = new UserListDTO();
+      userDTO.id = user.id;
+      userDTO.username = user.username;
+      userDTO.account = user.account;
+      userDTO.email = user.email;
+      userDTO.phone = user.phone;
+      userDTO.privateStatus = user.privateStatus;
+      return userDTO;
+    });
+
+    return { userList, total };
   }
 
   async addUserJoinEvent(eventId: number, userId: number) {

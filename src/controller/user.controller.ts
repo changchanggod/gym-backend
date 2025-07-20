@@ -7,6 +7,7 @@ import {
   Patch,
   Param,
   Del,
+  Query,
 } from '@midwayjs/core';
 import { Context } from '@midwayjs/koa';
 import { UserService } from '../service/user.service';
@@ -42,11 +43,37 @@ export class APIController {
       // 处理其他错误
       return {
         success: false,
-        message: 'Failed to update user',
+        message: error.message || 'Failed to get user',
         error: error.message,
       };
     }
   }
+
+  @Get('/userList')
+  async getUserList(
+    @Query('username') username: string,
+    @Query('page') page = 1,
+    @Query('pageSize') pageSize = 10
+  ) {
+    try {
+      const data = await this.userService.getUserList(username, page, pageSize);
+
+      if (data)
+        return {
+          success: true,
+          message: 'UserList get successfully',
+          data: data,
+        };
+      else
+        return {
+          success: false,
+          message: 'UserList get failed',
+        };
+    } catch (error) {
+      return { success: false, message: error.message };
+    }
+  }
+
   @Post()
   async registerUser(
     @Body('username') username: string,
@@ -79,6 +106,7 @@ export class APIController {
       };
     }
   }
+
   @Patch('/:id') // 假设路径参数为id，例如 /updateUser/123
   async updateUser(
     @Param('id') id: number, // 从URL路径中获取id
@@ -111,6 +139,7 @@ export class APIController {
       };
     }
   }
+
   @Del('/:id')
   async deleteUser(@Param('id') id: number) {
     try {
