@@ -18,6 +18,9 @@ export class CreateEventDTO {
   @Rule(RuleType.string().required())
   endTime: string;
 
+  @Rule(RuleType.string().required())
+  registerEndTime: string;
+
   @Rule(RuleType.string().required().min(1).max(100))
   location: string;
 
