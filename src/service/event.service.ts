@@ -197,6 +197,7 @@ export class EventService {
       'event.id',
       'event.startTime',
       'event.endTime',
+      'event.registerEndTime',
       'event.location',
       'event.name',
       'event.participantsMaxCount',
