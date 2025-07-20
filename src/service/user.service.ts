@@ -130,6 +130,7 @@ export class UserService {
           name: event.name,
           startTime: event.startTime.toISOString(),
           endTime: event.endTime.toISOString(),
+          registerEndTime: event.registerEndTime.toISOString(),
           location: event.location,
           state: 'join',
           // 只选择需要的字段，避免敏感信息
@@ -142,6 +143,7 @@ export class UserService {
           name: event.name,
           startTime: event.startTime.toISOString(),
           endTime: event.endTime.toISOString(),
+          registerEndTime: event.registerEndTime.toISOString(),
           location: event.location,
           state: 'host',
           // 只选择需要的字段，避免敏感信息

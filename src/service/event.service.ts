@@ -30,6 +30,7 @@ export class EventService {
     newEvent.type = createEventDTO.type;
     newEvent.startTime = new Date(createEventDTO.startTime);
     newEvent.endTime = new Date(createEventDTO.endTime);
+    newEvent.registerEndTime = new Date(createEventDTO.registerEndTime);
     newEvent.location = createEventDTO.location;
     newEvent.participantsMaxCount = createEventDTO.participantsMaxCount;
     newEvent.organizer = await this.userRepository.findOne({
@@ -135,6 +136,7 @@ export class EventService {
     eventDTO.endTime = event.endTime.toISOString();
     eventDTO.location = event.location;
     eventDTO.participantsMaxCount = event.participantsMaxCount;
+    eventDTO.registerEndTime = event.registerEndTime.toISOString();
     eventDTO.organizer = {
       id: event.organizer.id,
       username: event.organizer.username,
@@ -274,6 +276,7 @@ export class EventService {
       briefEvent.id = event.id;
       briefEvent.location = event.location;
       briefEvent.name = event.name;
+      briefEvent.registerEndTime = event.registerEndTime.toISOString();
       if (event.organizer.id === userId) {
         briefEvent.state = 'host';
       } else if (joinedEventIds.has(event.id)) {
