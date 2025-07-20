@@ -108,6 +108,18 @@ export class UserService {
     return { success: true, message: 'User event deleted successfully' };
   }
 
+  async deleteUserFollows(followerId: number, userId: number) {
+    const follower = await this.userRepository.findOne({
+      where: { id: followerId },
+      relations: ['follows'],
+    });
+    if (!follower) {
+      throw new Error(`Follower with id ${followerId} not found`);
+    }
+    follower.follows = follower.follows.filter(follow => follow.id !== userId);
+    return await this.userRepository.save(follower);
+  }
+
   async getUser(id: number) {
     const user = await this.userRepository.findOne({
       where: { id },
@@ -240,6 +252,23 @@ export class UserService {
     user.joinEvents.push(event);
     await this.userRepository.save(user);
     return { success: true, message: 'User event joined successfully' };
+  }
+
+  async addUserFollows(followerId: number, userId: number) {
+    const follower = await this.userRepository.findOne({
+      where: { id: followerId },
+    });
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+    });
+    if (!follower) {
+      throw new Error(`Follower with id ${followerId} not found`);
+    }
+    if (!user) {
+      throw new Error(`User with id ${followerId} not found`);
+    }
+    follower.follows.push(user);
+    return await this.userRepository.save(follower);
   }
 
   async loginUser(LoginDTO: LoginDTO) {

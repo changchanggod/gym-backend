@@ -250,6 +250,32 @@ export class APIController {
     }
   }
 
+  @Del('/follower/:id')
+  async deleteUserFollows(
+    @Param('id') userId: number,
+    @Body('followerId') followerId: number
+  ) {
+    try {
+      const res = await this.userService.deleteUserFollows(followerId, userId);
+      if (res) {
+        return {
+          success: true,
+          message: '取消关注成功',
+        };
+      } else {
+        return {
+          success: false,
+          message: '取消关注失败',
+        };
+      }
+    } catch (error) {
+      return {
+        success: false,
+        message: error.message || '取消关注失败',
+      };
+    }
+  }
+
   @Post('/joinEvent')
   async addUserJoinEvent(
     @Body('eventId') eventId: number,
@@ -266,6 +292,32 @@ export class APIController {
       return {
         success: false,
         message: error.message || '参加失败,请稍后再试',
+      };
+    }
+  }
+
+  @Post('/follower/:id')
+  async AddUserFollows(
+    @Param('id') userId: number,
+    @Body('followerId') followerId: number
+  ) {
+    try {
+      const res = await this.userService.addUserFollows(followerId, userId);
+      if (res) {
+        return {
+          success: true,
+          message: '关注成功',
+        };
+      } else {
+        return {
+          success: false,
+          message: '关注失败',
+        };
+      }
+    } catch (error) {
+      return {
+        success: false,
+        message: error.message || '关注失败',
       };
     }
   }
