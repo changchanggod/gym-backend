@@ -308,9 +308,11 @@ export class UserService {
   async addUserFollows(followerId: number, userId: number) {
     const follower = await this.userRepository.findOne({
       where: { id: followerId },
+      relations: ['follows'],
     });
     const user = await this.userRepository.findOne({
       where: { id: userId },
+      relations: ['followers'],
     });
     if (!follower) {
       throw new Error(`Follower with id ${followerId} not found`);
@@ -319,7 +321,9 @@ export class UserService {
       throw new Error(`User with id ${followerId} not found`);
     }
     if (!follower.follows) follower.follows = [];
+    if (!user.followers) user.followers = [];
     follower.follows.push(user);
+    user.followers.push(follower);
     return await this.userRepository.save(follower);
   }
 
