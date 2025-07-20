@@ -61,6 +61,8 @@ export class UserBriefDTO {
 }
 
 export class UserListDTO {
+  id: number;
+
   @Rule(RuleType.string().required())
   username: string;
 
