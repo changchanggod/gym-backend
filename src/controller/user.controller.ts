@@ -63,11 +63,21 @@ export class APIController {
     registerDTO.description = description;
     registerDTO.email = email;
     registerDTO.phone = phone;
-    const result = await this.userService.registerUser(registerDTO);
-    if (result) {
-      return { success: true, message: '注册成功', data: result };
+    try {
+      const result = await this.userService.registerUser(registerDTO);
+      if (result) {
+        return { success: true, message: '注册成功', data: result };
+      }
+      return {
+        success: false,
+        message: '注册失败，请稍后再试',
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: error.message || '注册失败，请稍后再试',
+      };
     }
-    return { success: false, message: '注册失败，请稍后再试' };
   }
   @Patch('/:id') // 假设路径参数为id，例如 /updateUser/123
   async updateUser(

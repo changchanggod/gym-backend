@@ -15,17 +15,30 @@ export class UserService {
 
   // 用户注册
   async registerUser(registerDTO: RegisterDTO) {
-    const newUser = new User();
-    newUser.username = registerDTO.username;
-    newUser.account = registerDTO.account;
-    newUser.password = registerDTO.password;
-    newUser.description = registerDTO.description;
-    newUser.email = registerDTO.email;
-    newUser.phone = registerDTO.phone;
-    newUser.joinEvents = [];
-    newUser.hostEvents = [];
-
-    return await this.userRepository.save(newUser);
+    try {
+      const newUser = new User();
+      newUser.username = registerDTO.username;
+      newUser.account = registerDTO.account;
+      newUser.password = registerDTO.password;
+      newUser.description = registerDTO.description;
+      newUser.email = registerDTO.email;
+      newUser.phone = registerDTO.phone;
+      newUser.joinEvents = [];
+      newUser.hostEvents = [];
+      console.log(newUser.username);
+      await this.userRepository.save(newUser);
+      return 'success';
+    } catch (error) {
+      // 检查是否是唯一约束冲突
+      if (error.code === 'ER_DUP_ENTRY') {
+        if (error.sqlMessage.includes('UQ_USERNAME')) {
+          throw new Error('用户名已存在');
+        } else if (error.sqlMessage.includes('UQ_ACCOUNT')) {
+          throw new Error('账号已存在');
+        }
+      }
+      throw new Error('注册失败，请稍后再试');
+    }
   }
 
   // 用户信息更改

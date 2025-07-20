@@ -7,22 +7,25 @@ import {
   ManyToMany,
   JoinTable,
   OneToMany,
+  Unique,
 } from 'typeorm';
 import { Event } from './event';
 import { Comment } from './comment';
 
 @Entity('users')
+@Unique('UQ_USERNAME', ['username'])
+@Unique('UQ_ACCOUNT', ['account'])
 export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ unique: true })
+  @Column()
   username: string;
 
   @Column({ nullable: true, default: '这个人貌似很神秘呢···' })
   description?: string;
 
-  @Column({ unique: true })
+  @Column()
   account: string;
 
   @Column()
