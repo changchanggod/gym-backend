@@ -120,7 +120,7 @@ export class UserService {
     return await this.userRepository.save(follower);
   }
 
-  async getUser(id: number) {
+  async getUser(id: number, currentId: number) {
     const user = await this.userRepository.findOne({
       where: { id },
       relations: [
@@ -129,56 +129,74 @@ export class UserService {
         'joinEvents.participants',
         'hostEvents.participants',
         'follows',
+        'followers',
       ],
     });
     if (!user) {
       throw new Error(`User ${id} not found`);
     }
+    let friends = false;
     const htmlRenderUserDTO = new HTMLRenderUserDTO();
     htmlRenderUserDTO.username = user.username;
     htmlRenderUserDTO.id = user.id;
     htmlRenderUserDTO.account = user.account;
     htmlRenderUserDTO.description = user.description;
-    htmlRenderUserDTO.email = user.email;
-    htmlRenderUserDTO.phone = user.phone;
-    htmlRenderUserDTO.joinEvents = user.joinEvents.map(
-      event =>
-        ({
-          id: event.id,
-          name: event.name,
-          startTime: event.startTime.toISOString(),
-          endTime: event.endTime.toISOString(),
-          registerEndTime: event.registerEndTime.toISOString(),
-          location: event.location,
-          state: 'join',
-          participantsCount: event.participants.length,
-          participantsMaxCount: event.participantsMaxCount,
-          // 只选择需要的字段，避免敏感信息
-        } as EventBriefDTO)
-    );
-    htmlRenderUserDTO.hostEvents = user.hostEvents.map(
-      event =>
-        ({
-          id: event.id,
-          name: event.name,
-          startTime: event.startTime.toISOString(),
-          endTime: event.endTime.toISOString(),
-          registerEndTime: event.registerEndTime.toISOString(),
-          location: event.location,
-          state: 'host',
-          participantsCount: event.participants.length,
-          participantsMaxCount: event.participantsMaxCount,
-          // 只选择需要的字段，避免敏感信息
-        } as EventBriefDTO)
-    );
-    htmlRenderUserDTO.follows = user.follows.map(follow => ({
-      id: follow.id,
-      username: follow.username,
-      account: follow.account,
-      email: follow.email,
-      phone: follow.phone,
-      privateStatus: follow.privateStatus,
-    }));
+    htmlRenderUserDTO.privateStatus = user.privateStatus;
+    if (user.privateStatus === 2) {
+      friends =
+        user.followers.some(follower => follower.id === currentId) &&
+        user.follows.some(follow => follow.id === user.id);
+    }
+    if (id === currentId || user.privateStatus === 1 || friends) {
+      htmlRenderUserDTO.email = user.email;
+      htmlRenderUserDTO.phone = user.phone;
+      htmlRenderUserDTO.joinEvents = user.joinEvents.map(
+        event =>
+          ({
+            id: event.id,
+            name: event.name,
+            startTime: event.startTime.toISOString(),
+            endTime: event.endTime.toISOString(),
+            registerEndTime: event.registerEndTime.toISOString(),
+            location: event.location,
+            state: 'join',
+            participantsCount: event.participants.length,
+            participantsMaxCount: event.participantsMaxCount,
+            // 只选择需要的字段，避免敏感信息
+          } as EventBriefDTO)
+      );
+      htmlRenderUserDTO.hostEvents = user.hostEvents.map(
+        event =>
+          ({
+            id: event.id,
+            name: event.name,
+            startTime: event.startTime.toISOString(),
+            endTime: event.endTime.toISOString(),
+            registerEndTime: event.registerEndTime.toISOString(),
+            location: event.location,
+            state: 'host',
+            participantsCount: event.participants.length,
+            participantsMaxCount: event.participantsMaxCount,
+            // 只选择需要的字段，避免敏感信息
+          } as EventBriefDTO)
+      );
+      htmlRenderUserDTO.follows = user.follows.map(follow => ({
+        id: follow.id,
+        username: follow.username,
+        account: follow.account,
+        email: follow.email,
+        phone: follow.phone,
+        privateStatus: follow.privateStatus,
+      }));
+      htmlRenderUserDTO.followers = user.followers.map(follower => ({
+        id: follower.id,
+        username: follower.username,
+        account: follower.account,
+        email: follower.email,
+        phone: follower.phone,
+        privateStatus: follower.privateStatus,
+      }));
+    }
     return htmlRenderUserDTO;
   }
 

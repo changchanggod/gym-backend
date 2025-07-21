@@ -26,10 +26,13 @@ export class APIController {
   @Inject()
   eventService: EventService;
 
-  @Get('/:id')
-  async getUser(@Param('id') id: number) {
+  @Get('/:id/:currentId')
+  async getUser(
+    @Param('id') id: number,
+    @Param('currentId') currentId: number
+  ) {
     try {
-      const user = await this.userService.getUser(id);
+      const user = await this.userService.getUser(id, currentId);
       return { success: true, message: 'OK', data: user };
     } catch (error) {
       if (error.message === 'User not found') {

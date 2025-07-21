@@ -47,11 +47,16 @@ export class HTMLRenderUserDTO {
   @Rule(RuleType.string().optional().length(11))
   phone?: string;
 
-  joinEvents: EventBriefDTO[];
+  @Rule(RuleType.number().required())
+  privateStatus: number;
 
-  hostEvents: EventBriefDTO[];
+  joinEvents?: EventBriefDTO[];
 
-  follows: UserListDTO[];
+  hostEvents?: EventBriefDTO[];
+
+  follows?: UserListDTO[];
+
+  followers?: UserListDTO[];
 }
 
 export class UserBriefDTO {
