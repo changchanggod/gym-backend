@@ -318,10 +318,12 @@ export class UserService {
       userDTO.id = user.id;
       userDTO.username = user.username;
       userDTO.account = user.account;
-      userDTO.email = user.email;
-      userDTO.phone = user.phone;
       userDTO.avatar = user.avatar;
       userDTO.privateStatus = user.privateStatus;
+      if (user.privateStatus === 1) {
+        userDTO.email = user.email;
+        userDTO.phone = user.phone;
+      }
       return userDTO;
     });
 
@@ -349,12 +351,12 @@ export class UserService {
         const userDTO = new UserListDTO();
         userDTO.id = follow.id;
         userDTO.username = follow.username;
-
+        userDTO.avatar = follow.avatar;
+        userDTO.account = follow.account;
         // 根据隐私设置决定是否返回敏感信息
-        if (!follow.privateStatus) {
+        if (follow.privateStatus === 1) {
           userDTO.email = follow.email;
           userDTO.phone = follow.phone;
-          userDTO.account = follow.account;
         }
 
         userDTO.privateStatus = follow.privateStatus;
