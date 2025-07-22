@@ -11,7 +11,7 @@ import { EventBriefDTO } from '../dto/event';
 import { InjectEntityModel } from '@midwayjs/typeorm';
 import { Repository } from 'typeorm';
 import { mkdirSync, existsSync } from 'fs';
-import { rename } from 'fs/promises'; // 注意引入方式
+import { rename, access, unlink } from 'fs/promises'; // 注意引入方式
 import { join } from 'path';
 import { v4 as uuidv4 } from 'uuid'; // 需要安装：npm i uuid @types/uuid
 @Provide()
@@ -81,7 +81,6 @@ export class UserService {
       newUser.avatar = registerDTO.avatar;
       newUser.joinEvents = [];
       newUser.hostEvents = [];
-      console.log(newUser);
       await this.userRepository.save(newUser);
       return 'success';
     } catch (error) {
@@ -103,6 +102,20 @@ export class UserService {
     if (!user) {
       throw new Error(`User ${id} not found`);
     }
+    if (user.avatar && updateData.avatar !== user.avatar) {
+      try {
+        // 构建完整的图片路径
+        const fullPath = join(__dirname, `../../${user.avatar}`);
+
+        // 检查文件是否存在
+        await access(fullPath);
+
+        // 删除文件
+        await unlink(fullPath);
+      } catch (error) {
+        console.error('删除图片失败:', error);
+      }
+    }
     Object.assign(user, updateData);
     return await this.userRepository.save(user);
   }
@@ -119,6 +132,20 @@ export class UserService {
     user.joinEvents = [];
     for (const event of user.hostEvents) {
       event.participants = [];
+    }
+    if (user.avatar) {
+      try {
+        // 构建完整的图片路径
+        const fullPath = join(__dirname, `../../${user.avatar}`);
+
+        // 检查文件是否存在
+        await access(fullPath);
+
+        // 删除文件
+        await unlink(fullPath);
+      } catch (error) {
+        console.error('删除图片失败:', error);
+      }
     }
     await this.eventRepository.save(user.hostEvents);
     await this.userRepository.save(user);
@@ -194,7 +221,6 @@ export class UserService {
     htmlRenderUserDTO.description = user.description;
     htmlRenderUserDTO.privateStatus = user.privateStatus;
     htmlRenderUserDTO.avatar = user.avatar;
-    console.log(user.avatar);
     if (user.privateStatus === 2) {
       friends =
         user.followers.some(follower => follower.id === currentId) &&

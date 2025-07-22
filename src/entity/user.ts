@@ -37,7 +37,7 @@ export class User {
   @Column({ nullable: true, default: '未设置' })
   phone?: string;
 
-  @Column({ nullable: true, default: '' })
+  @Column({ nullable: true })
   avatar?: string;
 
   // 多对多关系，用户可以参加多个活动
