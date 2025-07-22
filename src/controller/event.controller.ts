@@ -43,7 +43,7 @@ export class EventController {
     @Query('location') location: string,
     @Query('startTime') startTime: string,
     @Query('endTime') endTime: string,
-    @Query('isNotFull') isNotFull: string,
+    @Query('allowJoin') allowJoin: string,
     @Query('page') page = 1,
     @Query('pageSize') pageSize = 10,
     @Query('sortField')
@@ -60,7 +60,7 @@ export class EventController {
       filter.location = location;
       filter.endTime = endTime;
       filter.startTime = startTime;
-      filter.isNotFull = isNotFull === 'true';
+      filter.allowJoin = allowJoin === 'true';
       switch (type) {
         case 'athletics':
           filter.type = EventType.ATHLETICS;

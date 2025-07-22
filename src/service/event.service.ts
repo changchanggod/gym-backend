@@ -55,6 +55,8 @@ export class EventService {
     commentBriefDTO.user = new UserBriefDTO();
     commentBriefDTO.user.id = userId;
     commentBriefDTO.user.username = comment.user.username;
+    commentBriefDTO.user.avatar = comment.user.avatar;
+    console.log(comment.user.avatar);
     commentBriefDTO.id = comment.id;
     commentBriefDTO.createTime = comment.createTime;
     return commentBriefDTO;
@@ -73,6 +75,7 @@ export class EventService {
     commentBriefDTO.user = new UserBriefDTO();
     commentBriefDTO.user.id = comment.user.id;
     commentBriefDTO.user.username = comment.user.username;
+    commentBriefDTO.user.avatar = comment.user.avatar;
     commentBriefDTO.id = comment.id;
     commentBriefDTO.createTime = comment.createTime;
     return commentBriefDTO;
@@ -157,6 +160,7 @@ export class EventService {
           user: {
             id: comment.user.id,
             username: comment.user.username,
+            avatar: comment.user.avatar,
           } as UserBriefDTO,
           createTime: comment.createTime,
         } as CommentBriefDTO)

@@ -69,6 +69,9 @@ export class UserBriefDTO {
   @Rule(RuleType.number().required())
   id: number;
 
+  @Rule(RuleType.string().optional())
+  avatar?: string;
+
   @Rule(RuleType.string().required())
   username: string;
 }
