@@ -1,4 +1,4 @@
-import { Provide } from '@midwayjs/core';
+import { Provide, Config } from '@midwayjs/core';
 import { User } from '../entity/user';
 import { Event } from '../entity/event';
 import {
@@ -10,6 +10,10 @@ import {
 import { EventBriefDTO } from '../dto/event';
 import { InjectEntityModel } from '@midwayjs/typeorm';
 import { Repository } from 'typeorm';
+import { mkdirSync, existsSync } from 'fs';
+import { rename } from 'fs/promises'; // 注意引入方式
+import { join } from 'path';
+import { v4 as uuidv4 } from 'uuid'; // 需要安装：npm i uuid @types/uuid
 @Provide()
 export class UserService {
   @InjectEntityModel(User)
@@ -17,6 +21,52 @@ export class UserService {
 
   @InjectEntityModel(Event)
   eventRepository: Repository<Event>;
+
+  private uploadDir: string;
+
+  @Config('upload')
+  uploadConfig: any;
+
+  // 修改 init 方法，确保 uploadDir 正确初始化
+  async init() {
+    // 增加配置存在性校验
+    if (!this.uploadConfig || !this.uploadConfig.uploadDir) {
+      throw new Error(
+        '上传配置不存在，请检查 config.default.ts 中的 upload 配置'
+      );
+    }
+    this.uploadDir = this.uploadConfig.uploadDir;
+    // 确保目录存在
+    if (!existsSync(this.uploadDir)) {
+      mkdirSync(this.uploadDir, { recursive: true });
+    }
+  }
+
+  /**
+   * 保存上传的图片
+   * @param file 上传的文件对象
+   * @returns 图片访问URL
+   */
+  async saveImage(file: any): Promise<string> {
+    try {
+      // 生成唯一文件名和目标路径
+      const ext = file.filename.split('.').pop();
+      const filename = `${uuidv4()}.${ext}`;
+      const targetPath = join(this.uploadDir, filename);
+      console.log('目标路径:', targetPath);
+
+      // 若file.data是临时文件路径，则移动文件
+      const tmpFilePath = file.data; // 临时文件路径（如/tmp/xxx.png）
+
+      // 移动文件（从tmp目录到upload目录）
+      await rename(tmpFilePath, targetPath);
+
+      // 返回可访问的URL路径
+      return `/uploads/${filename}`;
+    } catch (error) {
+      throw new Error(`图片迁移失败: ${error.message}`);
+    }
+  }
 
   // 用户注册
   async registerUser(registerDTO: RegisterDTO) {
@@ -28,9 +78,10 @@ export class UserService {
       newUser.description = registerDTO.description;
       newUser.email = registerDTO.email;
       newUser.phone = registerDTO.phone;
+      newUser.avatar = registerDTO.avatar;
       newUser.joinEvents = [];
       newUser.hostEvents = [];
-      console.log(newUser.username);
+      console.log(newUser);
       await this.userRepository.save(newUser);
       return 'success';
     } catch (error) {
@@ -142,6 +193,8 @@ export class UserService {
     htmlRenderUserDTO.account = user.account;
     htmlRenderUserDTO.description = user.description;
     htmlRenderUserDTO.privateStatus = user.privateStatus;
+    htmlRenderUserDTO.avatar = user.avatar;
+    console.log(user.avatar);
     if (user.privateStatus === 2) {
       friends =
         user.followers.some(follower => follower.id === currentId) &&
@@ -211,6 +264,7 @@ export class UserService {
         'user.phone',
         'user.privateStatus',
         'user.createTime',
+        'user.avatar',
       ]);
 
     // 添加用户名搜索条件
@@ -240,6 +294,7 @@ export class UserService {
       userDTO.account = user.account;
       userDTO.email = user.email;
       userDTO.phone = user.phone;
+      userDTO.avatar = user.avatar;
       userDTO.privateStatus = user.privateStatus;
       return userDTO;
     });

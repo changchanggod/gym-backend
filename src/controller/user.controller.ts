@@ -8,6 +8,8 @@ import {
   Param,
   Del,
   Query,
+  Files,
+  File,
 } from '@midwayjs/core';
 import { Context } from '@midwayjs/koa';
 import { UserService } from '../service/user.service';
@@ -25,6 +27,83 @@ export class APIController {
 
   @Inject()
   eventService: EventService;
+
+  /**
+   * 单图上传
+   */
+  @Post('/image')
+  // 修正：使用 @File() 装饰器（单数形式）并指定字段名
+  async uploadSingleImage(@File('image') file: any) {
+    // 注意这里是 file 单数
+    await this.userService.init();
+    try {
+      if (!file) {
+        // 检查单个文件是否存在
+        return {
+          success: false,
+          message: '请选择要上传的图片',
+        };
+      }
+
+      // 保存图片并获取URL
+      const imageUrl = await this.userService.saveImage(file);
+
+      return {
+        success: true,
+        message: '上传成功',
+        data: {
+          url: imageUrl,
+          filename: file.filename,
+          size: file.size,
+          mimetype: file.mimetype,
+        },
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: error.message,
+      };
+    }
+  }
+
+  /**
+   * 多图上传
+   */
+  @Post('/images')
+  async uploadMultipleImages(@Files() files: any) {
+    await this.userService.init();
+    try {
+      if (!files || files.length === 0) {
+        return {
+          success: false,
+          message: '请选择要上传的图片',
+        };
+      }
+
+      // 批量处理文件
+      const result = [];
+      for (const file of files) {
+        const imageUrl = await this.userService.saveImage(file);
+        result.push({
+          url: imageUrl,
+          filename: file.filename,
+          size: file.size,
+          mimetype: file.mimetype,
+        });
+      }
+
+      return {
+        success: true,
+        message: `成功上传 ${result.length} 张图片`,
+        data: result,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: error.message,
+      };
+    }
+  }
 
   @Get('/:id/:currentId')
   async getUser(
@@ -115,7 +194,8 @@ export class APIController {
     @Body('password') password: string,
     @Body('description') description?: string,
     @Body('email') email?: string,
-    @Body('phone') phone?: string
+    @Body('phone') phone?: string,
+    @Body('avatar') avatar?: string
   ) {
     const registerDTO = new RegisterDTO();
     registerDTO.username = username;
@@ -124,6 +204,7 @@ export class APIController {
     registerDTO.description = description;
     registerDTO.email = email;
     registerDTO.phone = phone;
+    registerDTO.avatar = avatar;
     try {
       const result = await this.userService.registerUser(registerDTO);
       if (result) {

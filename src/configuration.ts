@@ -7,6 +7,8 @@ import { join } from 'path';
 import * as view from '@midwayjs/view-nunjucks';
 import { WeatherErrorFilter } from './filter/weather.filter';
 import * as orm from '@midwayjs/typeorm';
+import * as upload from '@midwayjs/upload'; // 导入组件
+import * as staticFile from '@midwayjs/static-file';
 const cors = require('@koa/cors');
 
 @Configuration({
@@ -19,6 +21,8 @@ const cors = require('@koa/cors');
     },
     view,
     orm,
+    upload,
+    staticFile,
   ],
   importConfigs: [join(__dirname, './config')],
 })
@@ -28,6 +32,7 @@ export class MainConfiguration {
 
   async onReady() {
     // add middleware
+    this.app.useMiddleware(staticFile.StaticMiddleware);
     // this.app.useMiddleware([ReportMiddleware]);
     this.app.use(
       cors({

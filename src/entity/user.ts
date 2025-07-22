@@ -37,6 +37,9 @@ export class User {
   @Column({ nullable: true, default: '未设置' })
   phone?: string;
 
+  @Column({ nullable: true, default: '' })
+  avatar?: string;
+
   // 多对多关系，用户可以参加多个活动
   @ManyToMany(() => Event, event => event.participants, {
     //cascade: true, // 级联操作

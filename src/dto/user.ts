@@ -19,6 +19,9 @@ export class RegisterDTO {
 
   @Rule(RuleType.string().optional().length(11))
   phone?: string;
+
+  @Rule(RuleType.string().optional())
+  avatar?: string;
 }
 
 export class LoginDTO {
@@ -46,6 +49,9 @@ export class HTMLRenderUserDTO {
 
   @Rule(RuleType.string().optional().length(11))
   phone?: string;
+
+  @Rule(RuleType.string().optional())
+  avatar?: string;
 
   @Rule(RuleType.number().required())
   privateStatus: number;
@@ -81,6 +87,9 @@ export class UserListDTO {
 
   @Rule(RuleType.string().optional().length(11))
   phone?: string;
+
+  @Rule(RuleType.string().optional())
+  avatar?: string;
 
   @Rule(RuleType.number().required())
   privateStatus: number;
