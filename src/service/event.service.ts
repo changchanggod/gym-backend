@@ -236,7 +236,7 @@ export class EventService {
       });
     }
 
-    if (filter.isNotFull) {
+    if (filter.allowJoin) {
       // 使用子查询统计参与者数量，避免与主查询的GROUP BY冲突
       // queryBuilder.addSelect(
       //   '(SELECT COUNT(*) FROM user_event WHERE user_event.eventId = event.id)',

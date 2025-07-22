@@ -114,5 +114,5 @@ export class EventFilterDTO {
   endTime?: string;
 
   @Rule(RuleType.boolean().optional())
-  isNotFull?: boolean;
+  allowJoin?: boolean;
 }
