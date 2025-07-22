@@ -238,13 +238,20 @@ export class EventService {
 
     if (filter.isNotFull) {
       // 使用子查询统计参与者数量，避免与主查询的GROUP BY冲突
-      queryBuilder.addSelect(
-        '(SELECT COUNT(*) FROM user_event WHERE user_event.eventId = event.id)',
-        'participantCount'
-      );
+      // queryBuilder.addSelect(
+      //   '(SELECT COUNT(*) FROM user_event WHERE user_event.eventId = event.id)',
+      //   'participantCount'
+      // );
 
-      // 使用HAVING过滤未满员的活动
-      queryBuilder.having('participantCount < event.participantsMaxCount');
+      queryBuilder.andWhere(`(
+        SELECT COUNT(*) 
+        FROM users_join_events_events 
+        WHERE users_join_events_events.eventsId = event.id
+    ) < event.participantsMaxCount`);
+      const now = new Date();
+      queryBuilder.andWhere('event.registerEndTime >= :nowTime', {
+        nowTime: now.toISOString(),
+      });
     }
 
     // 添加排序和分页
