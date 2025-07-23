@@ -372,6 +372,50 @@ export class UserService {
     };
   }
 
+  async getFollowersList(
+    userId: number,
+    username: string,
+    page = 1,
+    pageSize = 10
+  ) {
+    // 1. 检查用户是否存在并加载关注列表
+    const user = await this.userRepository
+      .createQueryBuilder('user')
+      .where('user.id = :userId', { userId })
+      .leftJoinAndSelect('user.followers', 'follower')
+      .andWhere('follower.username LIKE :username', {
+        username: `%${username}%`,
+      })
+      .getOne();
+
+    // 3. 转换为DTO并保护敏感信息
+    const userList = user.followers
+      .slice((page - 1) * pageSize, page * pageSize)
+      .map(follow => {
+        const userDTO = new UserListDTO();
+        userDTO.id = follow.id;
+        userDTO.username = follow.username;
+        userDTO.avatar = follow.avatar;
+        userDTO.account = follow.account;
+        // 根据隐私设置决定是否返回敏感信息
+        if (follow.privateStatus === 1) {
+          userDTO.email = follow.email;
+          userDTO.phone = follow.phone;
+        }
+
+        userDTO.privateStatus = follow.privateStatus;
+        return userDTO;
+      });
+
+    // 4. 返回分页信息
+    return {
+      userList,
+      total: user.followers.length,
+      page,
+      pageSize,
+    };
+  }
+
   async addUserJoinEvent(eventId: number, userId: number) {
     const event = await this.eventRepository.findOne({
       where: { id: eventId },
