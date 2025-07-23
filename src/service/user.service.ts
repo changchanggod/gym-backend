@@ -224,7 +224,7 @@ export class UserService {
     if (user.privateStatus === 2) {
       friends =
         user.followers.some(follower => follower.id === currentId) &&
-        user.follows.some(follow => follow.id === user.id);
+        user.follows.some(follow => follow.id === currentId);
     }
     if (id === currentId || user.privateStatus === 1 || friends) {
       htmlRenderUserDTO.email = user.email;
