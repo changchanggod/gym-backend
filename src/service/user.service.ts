@@ -53,7 +53,6 @@ export class UserService {
       const ext = file.filename.split('.').pop();
       const filename = `${uuidv4()}.${ext}`;
       const targetPath = join(this.uploadDir, filename);
-      console.log('目标路径:', targetPath);
 
       // 若file.data是临时文件路径，则移动文件
       const tmpFilePath = file.data; // 临时文件路径（如/tmp/xxx.png）
@@ -308,8 +307,6 @@ export class UserService {
 
     const sql = queryBuilder.getSql();
     const params = queryBuilder.getParameters();
-    console.log('Executed SQL:', sql);
-    console.log('Query Parameters:', params);
 
     const [list, total] = await queryBuilder.getManyAndCount();
 

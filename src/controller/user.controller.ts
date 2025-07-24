@@ -315,7 +315,6 @@ export class APIController {
 
   @Del('/hostEvent/:id')
   async deleteUserHostEvent(@Param('id') id: number) {
-    console.log('deleteUserHostEvent method is called with id:', id);
     try {
       const result = await this.eventService.deleteEvent(id);
       return {

@@ -56,7 +56,6 @@ export class EventService {
     commentBriefDTO.user.id = userId;
     commentBriefDTO.user.username = comment.user.username;
     commentBriefDTO.user.avatar = comment.user.avatar;
-    console.log(comment.user.avatar);
     commentBriefDTO.id = comment.id;
     commentBriefDTO.createTime = comment.createTime;
     return commentBriefDTO;
@@ -266,8 +265,6 @@ export class EventService {
 
     const sql = queryBuilder.getSql();
     const params = queryBuilder.getParameters();
-    console.log('Executed SQL:', sql);
-    console.log('Query Parameters:', params);
     const [list, total] = await queryBuilder.getManyAndCount();
 
     const joinedEventIds = new Set<number>();
