@@ -94,7 +94,7 @@ export class EventBriefDTO {
   @Rule(RuleType.number().required())
   participantsMaxCount: number;
 
-  @Rule(RuleType.string().optional()) //TODO???change to require?
+  @Rule(RuleType.string().optional())
   state: string;
 }
 

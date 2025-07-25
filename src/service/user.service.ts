@@ -305,9 +305,6 @@ export class UserService {
       .skip((page - 1) * pageSize)
       .take(pageSize);
 
-    const sql = queryBuilder.getSql();
-    const params = queryBuilder.getParameters();
-
     const [list, total] = await queryBuilder.getManyAndCount();
 
     const userList = list.map(user => {
