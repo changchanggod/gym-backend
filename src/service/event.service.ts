@@ -176,7 +176,7 @@ export class EventService {
     sortField:
       | 'startTime'
       | 'participantsMaxCount'
-      | 'createTime' = 'startTime',
+      | 'createTime' = 'createTime',
     sortOrder: 'ASC' | 'DESC' = 'ASC',
     userId: number
   ) {
@@ -199,6 +199,7 @@ export class EventService {
 
     queryBuilder.select([
       'event.id',
+      'event.createTime',
       'event.startTime',
       'event.endTime',
       'event.registerEndTime',
